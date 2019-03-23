@@ -46,18 +46,18 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        // FOR DEBUG PURPOSE
         mAuth.signOut();
-        // Initialize UI components
-        initUI();
+
+        // Initialize tab fragments
+        initTabFragments();
 
         // If user is not signed in
         if (mAuth.getCurrentUser() == null) {
             signInUser();
-        }
-    }
+        } else {
 
-    private void initUI() {
-        initTabFragments();
+        }
     }
 
     /**
