@@ -3,18 +3,19 @@ package com.tarcrsd.letsgo.Models;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class EventAttendees {
     private String id;
     private DocumentReference userUID;
     private DocumentReference eventID;
-    private LocalDate eventDate;
+    private Date eventDate;
     private int status;
 
     public EventAttendees() {
     }
 
-    public EventAttendees(String id, DocumentReference userUID, DocumentReference eventID, LocalDate eventDate, int status) {
+    public EventAttendees(String id, DocumentReference userUID, DocumentReference eventID, Date eventDate, int status) {
         this.id = id;
         this.userUID = userUID;
         this.eventID = eventID;
@@ -46,11 +47,11 @@ public class EventAttendees {
         this.eventID = eventID;
     }
 
-    public LocalDate getEventDate() {
+    public Date getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(LocalDate eventDate) {
+    public void setEventDate(Date eventDate) {
         this.eventDate = eventDate;
     }
 

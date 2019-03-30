@@ -1,16 +1,29 @@
 package com.tarcrsd.letsgo;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -18,13 +31,21 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.tarcrsd.letsgo.Adapters.EventAdapter;
+import com.tarcrsd.letsgo.Adapters.PagerAdapter;
+import com.tarcrsd.letsgo.Models.Events;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    // CONSTANTS
+    // REQUEST CODE CONSTANTS = For determining the response
+    // returned from a specific activity
     private static final int RC_SIGN_IN = 1;
 
     // Firebase references
@@ -47,16 +68,14 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // FOR DEBUG PURPOSE
-        mAuth.signOut();
+        // mAuth.signOut();
 
-        // Initialize tab fragments
+        // Initialize tab fragments & event recycle view
         initTabFragments();
 
         // If user is not signed in
         if (mAuth.getCurrentUser() == null) {
             signInUser();
-        } else {
-
         }
     }
 
@@ -143,27 +162,23 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
             if (resultCode == RESULT_OK) {
-                // Successfully signed in
+                // Get the current logged un user ID to determine
+                // if current user is a new user by checking with
+                // the "users" collection in firestore.
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                db.collection("users/").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (!task.getResult().exists()) {
-                            Intent registerNewUserIntend = new Intent(getApplicationContext(), RegisterActivity.class);
-                            startActivity(registerNewUserIntend);
-                        } else {
-
-                        }
-                    }
-                });
-            } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
+                db.collection("users/")
+                        .document(user.getUid())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (!task.getResult().exists()) {
+                                    Intent registerNewUserIntend = new Intent(getApplicationContext(), RegisterActivity.class);
+                                    startActivity(registerNewUserIntend);
+                                }
+                            }
+                        });
             }
         }
     }
