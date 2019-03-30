@@ -2,21 +2,22 @@ package com.tarcrsd.letsgo.Models;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 
 public class Events {
     private String eventID;
     private String name;
     private String description;
     private String image;
-    private LocalDate date;
-    private LocalTime time;
+    private Date date;
+    private Date time;
     private String location;
     private String locality;
 
     public Events() {
     }
 
-    public Events(String eventID, String name, String description, String image, LocalDate date, LocalTime time, String location, String locality) {
+    public Events(String eventID, String name, String description, String image, Date date, Date time, String location, String locality) {
         this.eventID = eventID;
         this.name = name;
         this.description = description;
@@ -59,19 +60,19 @@ public class Events {
         this.image = image;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public LocalTime getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 

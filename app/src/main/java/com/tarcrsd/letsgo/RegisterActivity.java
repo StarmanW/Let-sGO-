@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.tarcrsd.letsgo.Models.User;
@@ -54,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * On Create method
+     *
      * @param savedInstanceState
      */
     @Override
@@ -172,6 +175,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     /**
      * Called once user has completed
      * select image activity
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -205,6 +209,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void uploadImageToFirebaseStorage() {
         // Checking whether fileUri is empty or not.
         if (fileUri != null) {
+            final FrameLayout uploadImgOveray = findViewById(R.id.progressBarHolder);
             final StorageReference profileImgRef = mStorageRef.child(PROFILE_IMG_STORAGE_PATH + System.currentTimeMillis() + "." + getFileExtension(fileUri));
 
             // Adding addOnSuccessListener to second StorageReference.
@@ -212,6 +217,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // Remove loading screen
+                            uploadImgOveray.setVisibility(View.INVISIBLE);
+
+                            // Get the firebase image path
                             profileImgPath = profileImgRef.getPath();
                             Toast.makeText(RegisterActivity.this, "Profile image has been successfully uploaded", Toast.LENGTH_LONG).show();
                         }
@@ -220,6 +229,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void onFailure(@NonNull Exception ex) {
                             Toast.makeText(RegisterActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            // Display loading screen
+                            uploadImgOveray.setVisibility(View.VISIBLE);
                         }
                     });
         }

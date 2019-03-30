@@ -15,4 +15,5 @@
     <string name="txtErrName">Please enter your name.</string>
     <string name="txtErrContact">Please enter your contact number.</string>
     <string name="txtErrAddress">Please enter your address.</string>
+    <string name="upload_img">Uploading image...</string>
 </resources>

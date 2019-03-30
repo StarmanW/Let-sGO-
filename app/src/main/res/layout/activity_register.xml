@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".RegisterActivity">
 
+    <include layout="@layout/uploading_image_overlay" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -121,6 +123,7 @@
                     android:textSize="18sp" />
             </LinearLayout>
         </LinearLayout>
+
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

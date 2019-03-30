@@ -11,4 +11,7 @@
         <item name="android:textColorSecondary">@color/whiteTextColor</item>
     </style>
 
+    <style name="EventDetailText" parent="TextAppearance.AppCompat.Subhead"/>
+    <style name="EventTitle" parent="TextAppearance.AppCompat.Headline"/>
+    <style name="EventDetailTitle" parent="TextAppearance.AppCompat.Headline"/>
 </resources>
