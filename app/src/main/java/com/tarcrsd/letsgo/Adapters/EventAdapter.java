@@ -1,16 +1,18 @@
 package com.tarcrsd.letsgo.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.tarcrsd.letsgo.EventDetailsActivity;
 import com.tarcrsd.letsgo.Models.Events;
 import com.tarcrsd.letsgo.Module.DateFormatterModule;
 import com.tarcrsd.letsgo.Module.GlideApp;
@@ -119,7 +121,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                     .into(mEventImage);
         }
 
-
         /**
          * Handle click to show DetailActivity.
          *
@@ -127,11 +128,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
          */
         @Override
         public void onClick(View view) {
+            // Get the selected event index
             Events currentEvent = mEventsData.get(getAdapterPosition());
-            Toast.makeText(mContext, currentEvent.getName(), Toast.LENGTH_SHORT).show();
-//            Intent detailIntent = new Intent(mContext, DetailActivity.class);
-//            detailIntent.putExtra("title", currentEvent.getName());
-//            mContext.startActivity(detailIntent);
+
+            // Start event details activity
+            Intent detailIntent = new Intent(mContext, EventDetailsActivity.class);
+            detailIntent.putExtra("eventID", currentEvent.getEventID());
+            mContext.startActivity(detailIntent);
         }
     }
 }

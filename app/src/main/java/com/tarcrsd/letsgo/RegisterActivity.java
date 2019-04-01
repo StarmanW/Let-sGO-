@@ -125,8 +125,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             User newUser = new User(mAuth.getUid(), name, contact, address, profileImgPath);
 
             // Save new user to firebase
-            db.collection("users")
-                    .document(newUser.getUserUID())
+            db.document("users/" + newUser.getUserUID())
                     .set(newUser)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

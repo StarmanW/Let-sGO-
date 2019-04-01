@@ -46,7 +46,6 @@ import java.util.Locale;
 public class UpcomingEventFragment extends Fragment implements LocationListener {
 
     // Firebase references
-    private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
     private RecyclerView mRecyclerView;
@@ -56,7 +55,6 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
 
     public UpcomingEventFragment() {
         db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
     }
 
 
