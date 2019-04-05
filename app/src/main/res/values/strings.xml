@@ -23,4 +23,8 @@
     <string name="lblLocation">Location:</string>
     <string name="btnAttendance">View Attendance</string>
     <string name="btnEditDetails">Edit Event Details</string>
+    <string name="btn_previous_event">Previous Events</string>
+    <string name="btn_logout">Logout</string>
+    <string name="btn_edit_profile">Edit Profile</string>
+    <string name="txtWelcome">Let\'s GO!</string>
 </resources>

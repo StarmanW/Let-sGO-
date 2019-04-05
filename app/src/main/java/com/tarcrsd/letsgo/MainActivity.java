@@ -44,10 +44,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    // REQUEST CODE CONSTANTS = For determining the response
-    // returned from a specific activity
-    private static final int RC_SIGN_IN = 1;
-
     // Firebase references
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -67,16 +63,12 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        // FOR DEBUG PURPOSE
-        // mAuth.signOut();
+        if (mAuth.getCurrentUser() == null) {
+            finish();
+        }
 
         // Initialize tab fragments & event recycle view
         initTabFragments();
-
-        // If user is not signed in
-        if (mAuth.getCurrentUser() == null) {
-            signInUser();
-        }
     }
 
     /**
@@ -120,23 +112,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method to display sign in form and perform sign in operation
-     */
-    private void signInUser() {
-        // Add google authentication providers
-        List<AuthUI.IdpConfig> providers = Arrays.asList(new AuthUI.IdpConfig.GoogleBuilder().build());
-
-        // Create and launch sign-in intent
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setTheme(R.style.AppTheme)
-                        .build(),
-                RC_SIGN_IN);
-    }
-
-    /**
      * Create menu option at top
      *
      * @param menu
@@ -148,38 +123,5 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_bar, menu);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Result returned after sign in activity
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            if (resultCode == RESULT_OK) {
-                // Get the current logged un user ID to determine
-                // if current user is a new user by checking with
-                // the "users" collection in firestore.
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                db.collection("users/")
-                        .document(user.getUid())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (!task.getResult().exists()) {
-                                    Intent registerNewUserIntend = new Intent(getApplicationContext(), RegisterActivity.class);
-                                    startActivity(registerNewUserIntend);
-                                }
-                            }
-                        });
-            }
-        }
     }
 }
