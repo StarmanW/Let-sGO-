@@ -22,8 +22,14 @@
 
         <activity
             android:name=".EventDetailsActivity"
-            android:theme="@style/AppThemeNoActionBar" />
-        <activity android:name=".CreateEventActivity" />
+            android:theme="@style/AppThemeNoActionBar"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <activity android:name=".CreateEventActivity"/>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

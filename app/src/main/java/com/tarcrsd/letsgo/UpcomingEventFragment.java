@@ -76,7 +76,7 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
      */
     private void initEventRecycleView() {
         // Initialize the RecyclerView.
-        mRecyclerView = getView().findViewById(R.id.eventRecycleView);
+        mRecyclerView = getView().findViewById(R.id.recycleViewUpcoming);
 
         // Set the Layout Manager.
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
