@@ -79,8 +79,8 @@ public class AttendingFragment extends Fragment {
     }
 
     private void getAttendingEvents(QuerySnapshot value) {
-        mEventsData.clear();
         for (QueryDocumentSnapshot document : value) {
+            mEventsData.clear();
             document.toObject(EventAttendees.class)
                     .getEventID()
                     .addSnapshotListener(new EventListener<DocumentSnapshot>() {

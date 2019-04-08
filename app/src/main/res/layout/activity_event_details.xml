@@ -7,6 +7,8 @@
     android:fitsSystemWindows="true"
     tools:context=".EventDetailsActivity">
 
+    <include layout="@layout/uploading_image_overlay" />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -25,6 +27,7 @@
 
             <ImageView
                 android:id="@+id/eventImgView"
+                android:onClick="onClick"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="fitXY" />
@@ -90,6 +93,7 @@
                     android:id="@+id/txtLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:onClick="onClick"
                     android:ems="10"
                     android:enabled="false"/>
             </LinearLayout>
@@ -200,21 +204,21 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnEditDetails"
+                android:id="@+id/btnOne"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@color/primaryColor"
-                android:text="@string/btnEditDetails"
+                android:onClick="onClick"
                 android:textSize="18sp" />
 
             <Button
-                android:id="@+id/btnAttendance"
+                android:id="@+id/btnTwo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@color/primaryColor"
-                android:text="@string/btnAttendance"
+                android:onClick="onClick"
                 android:textSize="18sp" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

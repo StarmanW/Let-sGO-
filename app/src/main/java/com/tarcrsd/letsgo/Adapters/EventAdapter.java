@@ -3,7 +3,6 @@ package com.tarcrsd.letsgo.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,8 +110,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             // Populate the textviews with data.
             mTitleText.setText(currentEvent.getName());
             mDetailText.setText(String.format("%s (%s) - %s",
-                    DateFormatterModule.getDate(currentEvent.getDate()),
-                    DateFormatterModule.getTime(currentEvent.getTime()),
+                    DateFormatterModule.formatDate(currentEvent.getDate()),
+                    DateFormatterModule.formatTime(currentEvent.getTime()),
                     currentEvent.getLocality()));
 
             // Load the images into the ImageView using the Glide library.

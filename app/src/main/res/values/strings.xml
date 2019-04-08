@@ -22,7 +22,8 @@
     <string name="lblOrganizedBy">Organized by:</string>
     <string name="lblLocation">Location:</string>
     <string name="btnAttendance">View Attendance</string>
-    <string name="btnEditDetails">Edit Event Details</string>
+    <string name="btnEditEventDetails">Edit Event Details</string>
+    <string name="btnUpdateEventDetails">Update Details</string>
     <string name="btn_previous_event">Previous Events</string>
     <string name="btn_logout">Logout</string>
     <string name="btn_edit_profile">Edit Profile</string>
