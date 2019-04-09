@@ -57,7 +57,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:enabled="false"
                     android:inputType="textPersonName"
                     android:textSize="18sp" />
 
@@ -65,13 +64,14 @@
                     android:id="@+id/txtErrName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_red_dark" />
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/lblContact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/lblContact"
                     android:textSize="18sp" />
 
@@ -80,7 +80,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:enabled="false"
                     android:inputType="phone"
                     android:textSize="18sp" />
 
@@ -88,13 +87,14 @@
                     android:id="@+id/txtErrContact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_red_dark" />
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/lblAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/lblAddress"
                     android:textSize="18sp" />
 
@@ -103,7 +103,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:enabled="false"
                     android:inputType="textLongMessage|textMultiLine|textPersonName"
                     android:textSize="18sp" />
 
@@ -111,7 +110,8 @@
                     android:id="@+id/txtErrAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_red_dark" />
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btnEditProfile"

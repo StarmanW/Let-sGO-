@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -109,11 +108,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void InitUI() {
-// Replace the default toolbar with Collapsible Toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         // Initializes views
         collapsingToolbar = findViewById(R.id.collapsingToolbar);
         eventImgView = findViewById(R.id.eventImgView);
@@ -151,10 +145,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 });
     }
 
-//    /**
-//     * Buttons onClick event handler
-//     * @param v
-//     */
+    /**
+     * Buttons onClick event handler
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

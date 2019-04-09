@@ -135,7 +135,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     });
         }
     }
-
     /**
      * Data field validation
      *
@@ -148,23 +147,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         boolean isValidData = true;
 
         if (!name.matches("^[A-z\\-\\/ ]+$")) {
+            txtErrName.setVisibility(View.VISIBLE);
             txtErrName.setText(getString(R.string.txtErrName));
             isValidData = false;
         } else {
+            txtErrName.setVisibility(View.GONE);
             txtErrName.setText("");
         }
 
         if (!contact.matches("^[0-9\\-+]+$")) {
+            txtErrName.setVisibility(View.VISIBLE);
             txtErrContact.setText(getString(R.string.txtErrContact));
             isValidData = false;
         } else {
+            txtErrName.setVisibility(View.GONE);
             txtErrContact.setText("");
         }
 
         if (!address.matches("^[A-z0-9@\\-,.;' ]+$")) {
+            txtErrName.setVisibility(View.VISIBLE);
             txtErrAddress.setText(getString(R.string.txtErrAddress));
             isValidData = false;
         } else {
+            txtErrName.setVisibility(View.GONE);
             txtErrAddress.setText("");
         }
 

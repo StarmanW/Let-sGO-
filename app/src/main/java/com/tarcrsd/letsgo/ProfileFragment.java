@@ -35,6 +35,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.tarcrsd.letsgo.Models.User;
+import com.tarcrsd.letsgo.Module.GlideApp;
 
 import java.io.IOException;
 
@@ -45,11 +46,11 @@ import static android.app.Activity.RESULT_OK;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment implements View.OnClickListener {
-    private static final String EVENT_IMG_STORAGE_PATH = "profileImg/";
+    private static final String PROFILE_IMG_STORAGE_PATH = "profileImg/";
 
-    // Event image upload
+    // Profile Image
     private Uri fileUri;
-    private static final int EVENT_IMG_REQUEST = 1;
+    private static final int PROFILE_IMG_REQUEST = 1;
     private String profileImgPath;
 
     // Firebase references
@@ -59,14 +60,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     // UI components
     private Button btnLogout;
+    private Button btnEditProfile;
+    private Button btnPreviousEvents;
     private TextView txtName;
     private TextView txtContact;
     private TextView txtAddress;
-    private ImageView profileImageView;
+    private TextView txtErrName;
+    private TextView txtErrContact;
+    private TextView txtErrAddress;
+    private ImageView profileImgView;
 
-    // Variables
+    // Boolean
     private boolean isEditing;
-    private final User[] user = {null};
+
+    // POJO object
+    private User user = null;
 
     // Constructor
     public ProfileFragment() {
@@ -84,6 +92,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     /**
      * onViewCreated event handler
+     *
      * @param view
      * @param savedInstanceState
      */
@@ -97,36 +106,47 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
      * Initialize UI components
      */
     private void initUI() {
-
-        //get current user
-        db.collection("users")
-            .document(mAuth.getUid())
-            .get()
-            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    user[0] = task.getResult().toObject(User.class);
-
-                    //set text fields with user details
-                    txtName = getActivity().findViewById(R.id.txtName);
-                    txtName.setText(user[0].getName());
-
-                    txtContact = getActivity().findViewById(R.id.txtContact);
-                    txtContact.setText(user[0].getContact());
-
-                    txtAddress = getActivity().findViewById(R.id.txtAddress);
-                    txtAddress.setText(user[0].getAddress());
-
-                    profileImgPath = user[0].getProfileImg();
-                }
-            });
-
+        profileImgView = getActivity().findViewById(R.id.profileImg);
+        txtName = getActivity().findViewById(R.id.txtName);
+        txtContact = getActivity().findViewById(R.id.txtContact);
+        txtAddress = getActivity().findViewById(R.id.txtAddress);
+        txtErrName = getActivity().findViewById(R.id.txtErrName);
+        txtErrContact = getActivity().findViewById(R.id.txtErrContact);
+        txtErrAddress = getActivity().findViewById(R.id.txtErrAddress);
         btnLogout = getActivity().findViewById(R.id.btnLogout);
+        btnEditProfile = getActivity().findViewById(R.id.btnEditProfile);
+        btnPreviousEvents = getActivity().findViewById(R.id.btnPreviousEvents);
         btnLogout.setOnClickListener(this);
+        btnEditProfile.setOnClickListener(this);
+        btnPreviousEvents.setOnClickListener(this);
+        profileImgView.setOnClickListener(this);
+
+        // Get current user
+        db.collection("users")
+                .document(mAuth.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        user = task.getResult().toObject(User.class);
+
+                        // Set text fields with user details
+                        txtName.setText(user.getName());
+                        txtContact.setText(user.getContact());
+                        txtAddress.setText(user.getAddress());
+                        profileImgPath = user.getProfileImg();
+
+                        // Load image into image view
+                        GlideApp.with(getActivity())
+                                .load(mStorageRef.child(user.getProfileImg()))
+                                .into(profileImgView);
+                    }
+                });
     }
 
     /**
      * Buttons onClick event handler
+     *
      * @param v
      */
     @Override
@@ -150,30 +170,36 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void updateDetails() {
         if (!isEditing) {
-            //if not editing
-            txtAddress.setEnabled(true);
-            txtContact.setEnabled(true);
+            // If not editing
             txtName.setEnabled(true);
+            txtContact.setEnabled(true);
+            txtAddress.setEnabled(true);
+            txtName.requestFocus();
+            isEditing = true;
+            btnEditProfile.setText(getString(R.string.btn_update_profile));
         } else {
-            User updatedUser = new User(
-                    mAuth.getUid(), txtName.getText().toString(), txtContact.getText().toString(),
-                    txtAddress.getText().toString(), profileImgPath
-            );
+            if (isValidData()) {
+                User updatedUser = new User(
+                        mAuth.getUid(), txtName.getText().toString(), txtContact.getText().toString(),
+                        txtAddress.getText().toString(), profileImgPath
+                );
 
-            //set updated user details
-            db.document("/users/" + mAuth.getUid())
-                    .set(updatedUser, SetOptions.merge())
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            isEditing = false;
-                            txtAddress.setEnabled(false);
-                            txtContact.setEnabled(false);
-                            txtName.setEnabled(false);
-
-                            Toast.makeText(getContext(), "User details updated!", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                // Set updated user details
+                db.document("/users/" + mAuth.getUid())
+                        .set(updatedUser, SetOptions.merge())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                isEditing = false;
+                                txtAddress.setEnabled(false);
+                                txtContact.setEnabled(false);
+                                txtName.setEnabled(false);
+                                isEditing = false;
+                                btnEditProfile.setText(getString(R.string.btn_edit_profile));
+                                Toast.makeText(getContext(), "User details updated!", Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
         }
     }
 
@@ -181,9 +207,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.setType("image/*");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            startActivityForResult(Intent.createChooser(photoPickerIntent, "Please select an image"), EVENT_IMG_REQUEST);
+            startActivityForResult(Intent.createChooser(photoPickerIntent, "Please select an image"), PROFILE_IMG_REQUEST);
         } else {
-            startActivityForResult(photoPickerIntent, EVENT_IMG_REQUEST);
+            startActivityForResult(photoPickerIntent, PROFILE_IMG_REQUEST);
         }
     }
 
@@ -200,7 +226,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Check if any image is selected
-        if (requestCode == EVENT_IMG_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == PROFILE_IMG_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             // Get the image
             fileUri = data.getData();
             try {
@@ -208,7 +234,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), fileUri);
 
                 // Setting up bitmap selected image into ImageView.
-                profileImageView.setImageBitmap(bitmap);
+                profileImgView.setImageBitmap(bitmap);
 
                 // Upload image to firebase storage
                 uploadImageToFirebaseStorage();
@@ -225,7 +251,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         // Checking whether fileUri is empty or not.
         if (fileUri != null) {
             final FrameLayout uploadImgOverlay = getActivity().findViewById(R.id.progressBarHolder);
-            final StorageReference profileImgRef = mStorageRef.child(EVENT_IMG_STORAGE_PATH + System.currentTimeMillis() + "." + getFileExtension(fileUri));
+            final StorageReference profileImgRef = mStorageRef.child(PROFILE_IMG_STORAGE_PATH + System.currentTimeMillis() + "." + getFileExtension(fileUri));
             // Adding addOnSuccessListener to second StorageReference.
             profileImgRef.putFile(fileUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -236,8 +262,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
                             // Get the firebase image path
                             profileImgPath = profileImgRef.getPath();
-                            db.document("/events/" + user[0].getUserUID())
-                                    .update("image", profileImageView)
+                            db.document("/users/" + user.getUserUID())
+                                    .update("image", profileImgPath)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @SuppressLint("RestrictedApi")
                                         @Override
@@ -278,7 +304,49 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
+     * Data field validation
+     *
+     * @return
+     */
+    private boolean isValidData() {
+        String name = txtName.getText().toString();
+        String contact = txtContact.getText().toString();
+        String address = txtAddress.getText().toString();
+        boolean isValidData = true;
+
+        if (!name.matches("^[A-z\\-\\/ ]+$")) {
+            txtErrName.setVisibility(View.VISIBLE);
+            txtErrName.setText(getString(R.string.txtErrName));
+            isValidData = false;
+        } else {
+            txtErrName.setVisibility(View.GONE);
+            txtErrName.setText("");
+        }
+
+        if (!contact.matches("^[0-9\\-+]+$")) {
+            txtErrName.setVisibility(View.VISIBLE);
+            txtErrContact.setText(getString(R.string.txtErrContact));
+            isValidData = false;
+        } else {
+            txtErrName.setVisibility(View.GONE);
+            txtErrContact.setText("");
+        }
+
+        if (!address.matches("^[A-z0-9@\\-,.;' ]+$")) {
+            txtErrName.setVisibility(View.VISIBLE);
+            txtErrAddress.setText(getString(R.string.txtErrAddress));
+            isValidData = false;
+        } else {
+            txtErrName.setVisibility(View.GONE);
+            txtErrAddress.setText("");
+        }
+
+        return isValidData;
+    }
+
+    /**
      * Logout user
+     *
      * @param view
      */
     public void logout(View view) {

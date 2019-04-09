@@ -39,6 +39,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -259,6 +260,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 txtTime.setEnabled(true);
                 txtDescription.setEnabled(true);
                 btnOne.setText(getString(R.string.btnUpdateEventDetails));
+                editNameLayout.requestFocus();
                 isEditing = true;
             } else {
                 updateEventDetails();
@@ -270,7 +272,9 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
     private void handleBtnTwoClick() {
         if (isOrganizer) {
-
+            Intent attendanceActivityIntend = new Intent(getApplicationContext(), AttendanceActivity.class);
+            attendanceActivityIntend.putExtra("eventID", event.getEventID());
+            startActivity(attendanceActivityIntend);
         }
     }
 
@@ -307,7 +311,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                     });
         } else if (btnOne.getText().equals(getString(R.string.btn_unattend_event))) {
             db.collection("eventAttendees")
-                    .whereEqualTo("userUID", db.document("users/" +  mAuth.getUid()))
+                    .whereEqualTo("userUID", db.document("users/" + mAuth.getUid()))
                     .whereEqualTo("eventID", db.document("events/" + event.getEventID()))
                     .limit(1)
                     .get()
@@ -337,7 +341,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
      */
     private void updateEventDetails() {
         try {
-            Events updatedEvent = new Events(event.getEventID(),
+            final Events updatedEvent = new Events(event.getEventID(),
                     txtEventName.getText().toString(),
                     txtDescription.getText().toString(),
                     eventImgPath,
@@ -360,6 +364,23 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                             btnOne.setText(getString(R.string.btnEditEventDetails));
                             isEditing = false;
                             Toast.makeText(getApplicationContext(), "Event details updated!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+            db.collection("eventAttendees")
+                    .whereEqualTo("eventID", db.document("/events/" + updatedEvent.getEventID()))
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<EventAttendees> eventAttendees = task.getResult().toObjects(EventAttendees.class);
+                                for (EventAttendees eventAttendee : eventAttendees) {
+                                    eventAttendee.setEventDate(updatedEvent.getDate());
+                                    db.document("eventAttendees/" + eventAttendee.getId())
+                                            .set(eventAttendee, SetOptions.merge());
+                                }
+                            }
                         }
                     });
         } catch (ParseException ex) {
@@ -439,7 +460,6 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 Toast.makeText(this, status.getStatusCode(), Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
     /**
