@@ -24,14 +24,17 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,6 +46,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.tarcrsd.letsgo.Models.EventAttendees;
 import com.tarcrsd.letsgo.Models.EventOrganizer;
 import com.tarcrsd.letsgo.Models.Events;
 import com.tarcrsd.letsgo.Models.User;
@@ -206,11 +210,26 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             btnTwo.setText(getString(R.string.btnAttendance));
             isOrganizer = true;
         } else {
-            db.collection("eventAttendees/")
-                    .
-            btnOne.setText(getString(R.string.btnEditEventDetails));
-            btnTwo.setVisibility(View.GONE);
             isOrganizer = false;
+            btnTwo.setVisibility(View.GONE);
+            db.collection("eventAttendees/")
+                    .whereEqualTo("userUID", db.document("users/" + mAuth.getUid()))
+                    .whereEqualTo("eventID", db.document("events/" + event.getEventID()))
+                    .limit(1)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                QuerySnapshot document = task.getResult();
+                                if (document.size() != 0) {
+                                    btnOne.setText(getString(R.string.btn_unattend_event));
+                                } else {
+                                    btnOne.setText(getString(R.string.btn_attend_event));
+                                }
+                            }
+                        }
+                    });
         }
     }
 
@@ -245,7 +264,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 updateEventDetails();
             }
         } else {
-
+            updateEventAttendees();
         }
     }
 
@@ -265,6 +284,57 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+    /**
+     * Update event attendees
+     */
+    private void updateEventAttendees() {
+        if (btnOne.getText().equals(getString(R.string.btn_attend_event))) {
+            DocumentReference ref = db.collection("eventAttendees").document();
+            EventAttendees eventAttendees = new EventAttendees(
+                    ref.getId(),
+                    db.document("/users/" + mAuth.getUid()),
+                    db.document("/events/" + event.getEventID()),
+                    event.getDate(),
+                    1);
+
+            ref.set(eventAttendees)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            btnOne.setText(getString(R.string.btn_unattend_event));
+                            Toast.makeText(EventDetailsActivity.this, "You are attending this event.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else if (btnOne.getText().equals(getString(R.string.btn_unattend_event))) {
+            db.collection("eventAttendees")
+                    .whereEqualTo("userUID", db.document("users/" +  mAuth.getUid()))
+                    .whereEqualTo("eventID", db.document("events/" + event.getEventID()))
+                    .limit(1)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                QuerySnapshot querySnapshot = task.getResult();
+                                List<EventAttendees> eventAttendees = querySnapshot.toObjects(EventAttendees.class);
+                                db.document("eventAttendees/" + eventAttendees.get(0).getId())
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                btnOne.setText(getString(R.string.btn_attend_event));
+                                                Toast.makeText(EventDetailsActivity.this, "You have unattented this event.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Update event details
+     */
     private void updateEventDetails() {
         try {
             Events updatedEvent = new Events(event.getEventID(),

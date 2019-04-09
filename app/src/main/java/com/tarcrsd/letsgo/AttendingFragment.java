@@ -69,7 +69,7 @@ public class AttendingFragment extends Fragment {
     private void getEventAttendees() {
         db.collection("eventAttendees")
                 .whereEqualTo("userUID", db.document("/users/" + mAuth.getUid()))
-                .whereEqualTo("status", 0)
+                .whereEqualTo("status", 1)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {

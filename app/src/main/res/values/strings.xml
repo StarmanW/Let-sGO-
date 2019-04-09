@@ -25,6 +25,8 @@
     <string name="btnEditEventDetails">Edit Event Details</string>
     <string name="btnUpdateEventDetails">Update Details</string>
     <string name="btn_previous_event">Previous Events</string>
+    <string name="btn_attend_event">Attend Event</string>
+    <string name="btn_unattend_event">Unattend Event</string>
     <string name="btn_logout">Logout</string>
     <string name="btn_edit_profile">Edit Profile</string>
     <string name="txtWelcome">Let\'s GO!</string>

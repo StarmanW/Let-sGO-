@@ -55,21 +55,8 @@ public class EventAttendees {
         this.eventDate = eventDate;
     }
 
-    public String getStatus() {
-        String statusStr = "None";
-
-        switch (status) {
-            case 0:
-                statusStr = "Absent";
-                break;
-            case 1:
-                statusStr = "Pending";
-                break;
-            case 2:
-                statusStr = "Present";
-                break;
-        }
-        return statusStr;
+    public int getStatus() {
+        return status;
     }
 
     public void setStatus(int status) {
