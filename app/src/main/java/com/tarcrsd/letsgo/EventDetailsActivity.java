@@ -75,6 +75,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     // CONSTANT
     private static final int EVENT_IMG_REQUEST = 10;
     private static final int PLACE_AUTOCOMPLETE_REQUEST = 11;
+    private static final int ATTENDANCE_REQUEST = 12;
     private static final String EVENT_IMG_STORAGE_PATH = "eventsImg/";
 
     // Event image upload
@@ -274,7 +275,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         if (isOrganizer) {
             Intent attendanceActivityIntend = new Intent(getApplicationContext(), AttendanceActivity.class);
             attendanceActivityIntend.putExtra("eventID", event.getEventID());
-            startActivity(attendanceActivityIntend);
+            startActivityForResult(attendanceActivityIntend, ATTENDANCE_REQUEST);
         }
     }
 
@@ -349,6 +350,9 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                     DateFormatterModule.getTime(txtTime.getText().toString()),
                     txtLocation.getText().toString(),
                     event.getLocality());
+
+            Log.i("EVENT ID", event.getEventID());
+            Log.i("Eaaa", "1234");
 
             db.document("/events/" + event.getEventID())
                     .set(updatedEvent, SetOptions.merge())
@@ -458,6 +462,10 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Toast.makeText(this, status.getStatusCode(), Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == ATTENDANCE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                event.setEventID(data.getStringExtra("eventID"));
             }
         }
     }
