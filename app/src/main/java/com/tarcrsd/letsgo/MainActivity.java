@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.createNewEvent:
+
                 break;
         }
         return super.onOptionsItemSelected(item);

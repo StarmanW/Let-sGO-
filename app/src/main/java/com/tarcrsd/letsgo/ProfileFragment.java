@@ -167,8 +167,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 updateImage();
                 break;
             case R.id.btnPreviousEvents:
-                Intent previousEventIntent = new Intent(getContext(), EventHistory.class);
-                startActivity(previousEventIntent);
+//                Intent previousEventIntent = new Intent(getContext(), PreviousEvent.class);
+//                startActivity(previousEventIntent);
                 break;
         }
     }
