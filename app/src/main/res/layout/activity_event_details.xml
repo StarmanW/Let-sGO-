@@ -64,6 +64,7 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="@string/lblName"
+                    android:visibility="gone"
                     android:textSize="18sp" />
 
                 <EditText
@@ -71,11 +72,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    android:visibility="gone"
                     android:ems="10"
                     android:enabled="false" />
 
                 <TextView
-                    android:id="@+id/lblNameErr"
+                    android:id="@+id/lblEventNameErr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
