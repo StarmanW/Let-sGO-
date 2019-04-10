@@ -4,5 +4,5 @@
     <color name="primaryLightColor">#60AD5E</color>
     <color name="primaryDarkColor">#005005</color>
     <color name="editTextColor">#000000</color>
-    <color name="whiteTextColor">#fff</color>
+    <color name="whiteTextColor">#505050</color>
 </resources>

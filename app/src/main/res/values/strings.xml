@@ -40,4 +40,10 @@
     <string name="txtErrDate">Please enter event date.</string>
     <string name="txtErrTime">Please enter event time.</string>
     <string name="txtErrDescription">Please enter event description.</string>
+
+    <string name="datepicker">datePicker</string>
+    <string name="timepicker">timePicker</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
