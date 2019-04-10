@@ -59,11 +59,8 @@ import javax.annotation.Nullable;
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener{
 
     // POJO object
-    private Events event;
     private User user;
-
-    // Boolean
-    private boolean isEditing = false;
+    private Events newEvent = new Events();
 
     // CONSTANT
     private static final int EVENT_IMG_REQUEST = 10;
@@ -89,6 +86,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     private EditText txtTime;
     private EditText txtDescription;
     private Button btnOne;
+    private String api_key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +97,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-
-        // Initialize event ID
-        event = new Events();
-        event.setEventID(getIntent().getExtras().getString("eventID"));
 
         InitUI();
     }
@@ -127,7 +121,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
      */
     private void getUserData() {
         db.collection("eventOrganizer")
-                .whereEqualTo("eventID", db.document("/events/" + event.getEventID()))
+                .whereEqualTo("eventID", db.document("/events/" + newEvent.getEventID()))
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
@@ -157,8 +151,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.eventImgView:
                 updateImage();
+                break;
             case R.id.txtLocation:
                 updateLocation();
+                break;
         }
     }
 
@@ -181,29 +177,25 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
      */
     private void updateEventDetails() {
         try {
-            Events updatedEvent = new Events(event.getEventID(),
-                    txtEventName.getText().toString(),
-                    txtDescription.getText().toString(),
-                    eventImgPath,
-                    DateFormatterModule.getDate(txtDate.getText().toString()),
-                    DateFormatterModule.getTime(txtTime.getText().toString()),
-                    txtLocation.getText().toString(),
-                    event.getLocality());
+                    newEvent.setEventID(db.collection("events").document().getId());
+                    newEvent.setName(txtEventName.getText().toString());
+                    newEvent.setDescription(txtDescription.getText().toString());
+                    newEvent.setImage(eventImgPath);
+                    newEvent.setDate(DateFormatterModule.getDate(txtDate.getText().toString()));
+                    newEvent.setTime(DateFormatterModule.getTime(txtTime.getText().toString()));
+                    newEvent.setLocation(txtLocation.getText().toString());
 
-            db.document("/events/" + event.getEventID())
-                    .set(updatedEvent, SetOptions.merge())
+            db.document("/events/" + newEvent.getEventID())
+                    .set(newEvent)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             collapsingToolbar.setTitle(txtEventName.getText());
-                            editNameLayout.setVisibility(View.GONE);
-                            txtLocation.setEnabled(false);
-                            txtDate.setEnabled(false);
-                            txtTime.setEnabled(false);
-                            txtDescription.setEnabled(false);
-                            btnOne.setText(getString(R.string.btnEditEventDetails));
-                            isEditing = false;
                             Toast.makeText(getApplicationContext(), "New event added!", Toast.LENGTH_LONG).show();
+
+                            Intent toEventDetail = new Intent(getApplicationContext(), EventDetailsActivity.class);
+                            toEventDetail.putExtra("eventID", newEvent.getEventID());
+                            startActivity(toEventDetail);
                         }
                     });
         } catch (ParseException ex) {
@@ -212,15 +204,14 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void updateLocation() {
-        if (isEditing) {
-            final String API_KEY = getResources().getString(R.string.google_maps_key);
+            final String api_key = getResources().getString(R.string.google_maps_key);
 
             /**
              * Initialize Places. For simplicity, the API key is hard-coded. In a production
              * environment we recommend using a secure mechanism to manage API keys.
              */
             if (!Places.isInitialized()) {
-                Places.initialize(getApplicationContext(), API_KEY);
+                Places.initialize(getApplicationContext(), api_key);
             }
 
             // Start the autocomplete intent.
@@ -228,7 +219,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG))
                     .build(this);
             startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST);
-        }
+
     }
 
     /**
@@ -267,12 +258,12 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     txtLocation.setText(place.getAddress());
 
                     // Update location & locality for event object
-                    event.setLocation(place.getAddress());
+                    newEvent.setLocation(place.getAddress());
                     try {
                         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
                         List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
                         if (addresses.size() > 0) {
-                            event.setLocality(addresses.get(0).getLocality());
+                            newEvent.setLocality(addresses.get(0).getLocality());
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -304,7 +295,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
                             // Get the firebase image path
                             eventImgPath = eventImgRef.getPath();
-                            db.document("/events/" + event.getEventID())
+                            db.document("/events/" + newEvent.getEventID())
                                     .update("image", eventImgPath)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

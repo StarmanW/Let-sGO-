@@ -130,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.createNewEvent:
-
+                Intent createNewEventIntent = new Intent(getApplicationContext() ,CreateEventActivity.class);
+                startActivity(createNewEventIntent);
                 break;
         }
         return super.onOptionsItemSelected(item);

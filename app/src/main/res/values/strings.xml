@@ -28,6 +28,7 @@
     <string name="btn_logout">Logout</string>
     <string name="btn_edit_profile">Edit Profile</string>
     <string name="btn_update_profile">Update Profile</string>
+    <string name="btn_create_event">Let\'s Go!</string>
 
     <!--Error strings-->
     <string name="txtWelcome">Let\'s GO!</string>
