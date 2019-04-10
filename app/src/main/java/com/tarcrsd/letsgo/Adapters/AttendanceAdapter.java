@@ -3,9 +3,11 @@ package com.tarcrsd.letsgo.Adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -86,6 +88,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
         // Member Variables for the TextViews
         private TextView txtName;
+        private CheckBox checkBox;
 
         /**
          * Constructor for the ViewHolder, used in onCreateViewHolder().
@@ -97,9 +100,11 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
             // Initialize the view.
             txtName = itemView.findViewById(R.id.txtName);
+            checkBox = itemView.findViewById(R.id.checkBox);
 
             // Set the OnClickListener to the entire view.
             itemView.setOnClickListener(this);
+            checkBox.setOnClickListener(this);
         }
 
         void bindTo(EventAttendees eventAttendee) {
@@ -129,6 +134,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
             } else if (eventAttendee.getStatus() == 2) {
                 eventAttendee.setStatus(1);
             }
+
             db.document("/eventAttendees/" + eventAttendee.getId())
                     .set(eventAttendee, SetOptions.merge());
         }
