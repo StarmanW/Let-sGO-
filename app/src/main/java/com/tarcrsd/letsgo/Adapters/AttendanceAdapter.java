@@ -108,7 +108,14 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
         }
 
         void bindTo(EventAttendees eventAttendee) {
-            // Populate the textviews with data.
+            // Display default checkbox status
+            if (eventAttendee.getStatus() == 1) {
+                checkBox.setChecked(false);
+            } else if (eventAttendee.getStatus() == 2) {
+                checkBox.setChecked(true);
+            }
+
+            // Populate the text view with data.
             eventAttendee.getUserUID()
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -130,8 +137,10 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
             // Get the selected event attendees index
             EventAttendees eventAttendee = eventAttendees.get(getAdapterPosition());
             if (eventAttendee.getStatus() == 1) {
+                checkBox.setChecked(true);
                 eventAttendee.setStatus(2);
             } else if (eventAttendee.getStatus() == 2) {
+                checkBox.setChecked(false);
                 eventAttendee.setStatus(1);
             }
 
