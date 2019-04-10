@@ -204,10 +204,14 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
      * Initialize views with data retrieved
      */
     private void initEventData() {
-        // Load image into image view
-        GlideApp.with(getApplicationContext())
-                .load(mStorageRef.child(event.getImage()))
-                .into(eventImgView);
+        try {
+            // Load image into image view
+            GlideApp.with(getApplicationContext())
+                    .load(mStorageRef.child(event.getImage()))
+                    .into(eventImgView);
+        } catch (Exception ex) {
+            eventImgView.setImageResource(R.drawable.event_bg);
+        }
 
         // Set event data
         collapsingToolbar.setTitle(event.getName());
@@ -560,7 +564,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         String date = txtDate.getText().toString();
         boolean isValidData = true;
 
-        if (!eventName.matches("^[A-z\\-\\/ ]+$")) {
+        if (!eventName.matches("^[\\S\\s\\D\\d]+$")) {
             lblEventNameErr.setVisibility(View.VISIBLE);
             isValidData = false;
         } else {

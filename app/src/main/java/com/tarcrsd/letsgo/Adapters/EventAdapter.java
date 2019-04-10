@@ -114,10 +114,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                     DateFormatterModule.formatTime(currentEvent.getTime()),
                     currentEvent.getLocality()));
 
-            // Load the images into the ImageView using the Glide library.
-            GlideApp.with(mContext)
-                    .load(mStorageRef.child(currentEvent.getImage()))
-                    .into(mEventImage);
+            try {
+                // Load the images into the ImageView using the Glide library.
+                GlideApp.with(mContext)
+                        .load(mStorageRef.child(currentEvent.getImage()))
+                        .into(mEventImage);
+            } catch (Exception ex) {
+                mEventImage.setImageResource(R.drawable.event_bg);
+            }
         }
 
         /**

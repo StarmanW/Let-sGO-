@@ -20,33 +20,48 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
-public class PreviousHistoryActivity extends AppCompatActivity {
-    private String eventID;
+public class PreviousEventActivity extends AppCompatActivity {
+
+    // Firebase references
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
+    // UI components & activity properties
     private RecyclerView mRecyclerView;
     private ArrayList<Events> mEventsData;
     private EventAdapter mAdapter;
 
-    public PreviousHistoryActivity() {
-        db = FirebaseFirestore.getInstance();
-    }
-
+    /**
+     * onCreate method
+     * @param savedInstanceState
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_previous_event);
+
+        // Get firebase instance
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
         initHistoryRecycleView();
         getEventAttendees();
     }
 
+    /**
+     * Initialize recycle view
+     */
     private void initHistoryRecycleView() {
         mRecyclerView = findViewById(R.id.recycleViewHistory);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         mEventsData = new ArrayList<>();
-        mAdapter = new EventAdapter(getApplicationContext(), mEventsData);
+        mAdapter = new EventAdapter(this, mEventsData);
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    /**
+     * Get list of events the user has attended
+     * before. NOTE: Compared using date.
+     */
     private void getEventAttendees() {
         db.collection("eventAttendees")
                 .whereEqualTo("userUID", db.document("/users/" + mAuth.getUid()))
@@ -55,12 +70,16 @@ public class PreviousHistoryActivity extends AppCompatActivity {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
                         getAttendedEvents(value);
-
                     }
                 });
 
     }
 
+    /**
+     * Get the list of events associated with
+     * each of the eventAttendees record
+     * @param value
+     */
     private void getAttendedEvents(QuerySnapshot value) {
         for (QueryDocumentSnapshot document : value) {
             mEventsData.clear();
@@ -74,8 +93,5 @@ public class PreviousHistoryActivity extends AppCompatActivity {
                         }
                     });
         }
-
     }
-
-
 }
