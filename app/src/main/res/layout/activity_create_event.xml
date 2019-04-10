@@ -16,20 +16,21 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:contentScrim="@color/primaryColor"
             app:expandedTitleGravity="bottom|center_horizontal"
             app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
-            android:id="@+id/collapsingToolbar"
             tools:context=".EventDetailsActivity">
 
             <ImageView
                 android:id="@+id/eventImgView"
-                android:onClick="onClick"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:background="@drawable/upload_img_placeholder"
+                android:onClick="onClick"
                 android:scaleType="fitXY" />
 
             <android.support.v7.widget.Toolbar
@@ -54,17 +55,15 @@
             android:padding="16dp">
 
             <LinearLayout
+                android:id="@+id/editNameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:id="@+id/editNameLayout"
-                android:visibility="gone">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/lblName"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
                     android:text="@string/lblName"
                     android:textSize="18sp" />
 
@@ -72,20 +71,22 @@
                     android:id="@+id/txtEventName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:enabled="false"/>
-            </LinearLayout>
+                    android:layout_marginBottom="8dp"
+                    android:ems="10" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/lblNameErr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="@string/txtErrEventName"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/lblLocation"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
                     android:text="@string/lblLocation"
                     android:textSize="18sp" />
 
@@ -93,20 +94,26 @@
                     android:id="@+id/txtLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:ems="10"
-                    android:onClick="onClick" />
-            </LinearLayout>
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:onClick="onClick"
+                    android:selectAllOnFocus="false" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/lblLocationErr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="@string/txtErrLocation"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/lblDate"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
                     android:text="@string/lblDate"
                     android:textSize="18sp" />
 
@@ -114,19 +121,23 @@
                     android:id="@+id/txtDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10" />
-            </LinearLayout>
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:inputType="text" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/lblDateErr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="@string/txtErrDate"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/lblTime"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
                     android:text="@string/lblTime"
                     android:textSize="18sp" />
 
@@ -134,19 +145,23 @@
                     android:id="@+id/txtTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10" />
-            </LinearLayout>
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:inputType="text" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/lblTimeErr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="@string/txtErrTime"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/lblDescription"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
                     android:text="@string/lblDescription"
                     android:textSize="18sp" />
 
@@ -154,18 +169,19 @@
                     android:id="@+id/txtDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:ems="10" />
+
+                <TextView
+                    android:id="@+id/lblDescriptionErr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="@string/txtErrDescription"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
+
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"/>
 
             <Button
                 android:id="@+id/btnOne"
@@ -174,6 +190,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@color/primaryColor"
                 android:onClick="onClick"
+                android:text="@string/btn_create_event"
                 android:textSize="18sp" />
 
         </LinearLayout>
