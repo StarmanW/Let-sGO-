@@ -1,26 +1,24 @@
 <resources>
     <string name="app_name">Let\'sGO!</string>
+
+    <!--UI label strings-->
     <string name="tab_upcomingEvents">Upcoming Events</string>
     <string name="tab_attending">Attending</string>
     <string name="tab_profile">Profile</string>
+    <string name="upload_img">Uploading image...</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <!--Label strings-->
     <string name="lblName">Name:</string>
     <string name="lblContact">Contact:</string>
     <string name="lblAddress">Address:</string>
-    <string name="btn_save">Save Profile</string>
-
-    <string name="txtErrName">Please enter your name.</string>
-    <string name="txtErrContact">Please enter your contact number.</string>
-    <string name="txtErrAddress">Please enter your address.</string>
-    <string name="upload_img">Uploading image...</string>
     <string name="lblDate">Date:</string>
     <string name="lblDescription">Description:</string>
     <string name="lblTime">Time:</string>
     <string name="lblOrganizedBy">Organized by:</string>
     <string name="lblLocation">Location:</string>
+
+    <!--Button strings-->
+    <string name="btn_save">Save Profile</string>
     <string name="btnAttendance">View Attendance</string>
     <string name="btnEditEventDetails">Edit Event Details</string>
     <string name="btnUpdateEventDetails">Update Details</string>
@@ -30,5 +28,15 @@
     <string name="btn_logout">Logout</string>
     <string name="btn_edit_profile">Edit Profile</string>
     <string name="btn_update_profile">Update Profile</string>
+
+    <!--Error strings-->
     <string name="txtWelcome">Let\'s GO!</string>
+    <string name="txtErrName">Please enter your name.</string>
+    <string name="txtErrContact">Please enter your contact number.</string>
+    <string name="txtErrAddress">Please enter your address.</string>
+    <string name="txtErrEventName">Please enter event name.</string>
+    <string name="txtErrLocation">Please enter event location.</string>
+    <string name="txtErrDate">Please enter event date.</string>
+    <string name="txtErrTime">Please enter event time.</string>
+    <string name="txtErrDescription">Please enter event description.</string>
 </resources>
