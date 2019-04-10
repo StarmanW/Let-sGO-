@@ -351,6 +351,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
      */
     public void logout(View view) {
         mAuth.signOut();
+        Intent loginActivityIntent = new Intent(getContext(), LoginActivity.class);
+        startActivity(loginActivityIntent);
         getActivity().finish();
     }
 }

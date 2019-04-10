@@ -55,7 +55,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // If user is not signed in
         if (mAuth.getCurrentUser() != null) {
             Intent mainActivityIntend = new Intent(getApplicationContext(), MainActivity.class);
-            startActivityForResult(mainActivityIntend, RC_SIGN_OUT);
+            startActivity(mainActivityIntend);
+            finish();
         }
         initGoogleSignIn();
     }
@@ -125,9 +126,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         } else if (requestCode == RC_NEWUSER_REGISTER) {
             Intent mainActivityIntend = new Intent(getApplicationContext(), MainActivity.class);
-            startActivityForResult(mainActivityIntend, RC_SIGN_OUT);
-        } else if (requestCode == RC_SIGN_OUT) {
-            mGoogleSignInClient.signOut();
+            startActivity(mainActivityIntend);
+            finish();
         }
     }
 
@@ -158,7 +158,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 startActivityForResult(registerNewUserIntend, RC_NEWUSER_REGISTER);
                                             } else {
                                                 Intent mainActivityIntend = new Intent(getApplicationContext(), MainActivity.class);
-                                                startActivityForResult(mainActivityIntend, RC_SIGN_OUT);
+                                                startActivity(mainActivityIntend);
+                                                finish();
                                             }
                                         }
                                     });
