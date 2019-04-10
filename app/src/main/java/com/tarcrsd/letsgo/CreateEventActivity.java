@@ -1,5 +1,6 @@
 package com.tarcrsd.letsgo;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,13 +49,17 @@ import com.tarcrsd.letsgo.Models.EventOrganizer;
 import com.tarcrsd.letsgo.Models.Events;
 import com.tarcrsd.letsgo.Models.User;
 import com.tarcrsd.letsgo.Module.DateFormatterModule;
+import com.tarcrsd.letsgo.Module.TimePickerFragment;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
 import javax.annotation.Nullable;
 
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener{
@@ -154,6 +160,12 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.txtLocation:
                 updateLocation();
+                break;
+            case R.id.txtDate:
+                showDatePicker(txtDate);
+                break;
+            case R.id.txtTime:
+                showDatePicker(txtTime);
                 break;
         }
     }
@@ -332,5 +344,73 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         // Returning the file Extension.
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    /**
+     * Handles the button click to create a new date picker fragment and
+     * show it.
+     *
+     * @param view View that was clicked
+     */
+    public void showDatePicker(View view) {
+
+        if (view.getId() == R.id.txtDate) {
+            DialogFragment newFragment = new DatePickerFragment();
+            newFragment.show(getSupportFragmentManager(),
+                    getString(R.string.datepicker));
+        } else if (view.getId() == R.id.txtTime) {
+            DialogFragment newFragment = new TimePickerFragment();
+            newFragment.show(getSupportFragmentManager(), getString(R.string.timepicker));
+        }
+
+    }
+
+//    public void showDatePicker(View view) {
+//        DialogFragment newFragment = new TimePickerFragment();
+//        newFragment.show(getSupportFragmentManager(), getString(R.string.timepicker));
+//    }
+
+    /**
+     *
+     * @param year  Chosen year
+     * @param month Chosen month
+     * @param day   Chosen day
+     */
+    public void processDatePickerResult(int year, int month, int day) {
+        String month_string = new SimpleDateFormat("MMM").format(month);
+        String day_string = Integer.toString(day);
+        String year_string = Integer.toString(year);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+
+        txtDate.setText(day_string +
+                "-" + month_string +
+                "-" + year_string +
+                " " + cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+    }
+
+    @SuppressLint("NewApi")
+    public void processTimePickerResult(int hour, int minute) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR, hour);
+        cal.set(Calendar.MINUTE, minute);
+
+        txtTime.setText(cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE) + " " + getAMOrPM(cal.get(Calendar.AM_PM)));
+
+    }
+
+    private String getAMOrPM(int AMorPM) {
+        String str;
+
+        if (AMorPM == 0) {
+            str = "PM";
+        } else {
+            str = "AM";
+        }
+
+        return str;
     }
 }
