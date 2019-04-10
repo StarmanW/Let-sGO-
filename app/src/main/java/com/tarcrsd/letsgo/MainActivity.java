@@ -130,8 +130,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.createNewEvent:
+<<<<<<< HEAD
                 Intent createNewEventIntent = new Intent(getApplicationContext() ,CreateEventActivity.class);
                 startActivity(createNewEventIntent);
+=======
+>>>>>>> parent of 4dcb535... Revert "Let Go (Event History)"
                 break;
         }
         return super.onOptionsItemSelected(item);
