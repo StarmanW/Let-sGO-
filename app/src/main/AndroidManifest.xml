@@ -15,7 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".AttendanceActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -37,6 +36,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".AttendanceActivity"
+            android:parentActivityName=".EventDetailsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".EventDetailsActivity" />
         </activity>
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".RegisterActivity" />
