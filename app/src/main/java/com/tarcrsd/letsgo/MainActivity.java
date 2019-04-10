@@ -1,6 +1,7 @@
 package com.tarcrsd.letsgo;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_upcomingEvents));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_attending));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_profile));
+        tabLayout.setTabTextColors(Color.WHITE, Color.WHITE);
 
         // Set the tabs to fill the entire layout.
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
