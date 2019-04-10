@@ -135,6 +135,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     });
         }
     }
+
     /**
      * Data field validation
      *

@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -90,7 +91,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     // UI Components
     private CollapsingToolbarLayout collapsingToolbar;
     private ImageView eventImgView;
-    private LinearLayout editNameLayout;
+
     private EditText txtEventName;
     private EditText txtLocation;
     private EditText txtDate;
@@ -98,6 +99,13 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     private EditText txtDescription;
     private EditText txtContact;
     private EditText txtOrganizedBy;
+
+    private TextView lblName;
+    private TextView lblEventNameErr;
+    private TextView lblLocationErr;
+    private TextView lblDateErr;
+    private TextView lblTimeErr;
+    private TextView lblDescriptionErr;
     private Button btnOne;
     private Button btnTwo;
 
@@ -131,7 +139,6 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         // Initializes views
         collapsingToolbar = findViewById(R.id.collapsingToolbar);
         eventImgView = findViewById(R.id.eventImgView);
-        editNameLayout = findViewById(R.id.editNameLayout);
         txtEventName = findViewById(R.id.txtEventName);
         txtLocation = findViewById(R.id.txtLocation);
         txtDate = findViewById(R.id.txtDate);
@@ -139,6 +146,13 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         txtDescription = findViewById(R.id.txtDescription);
         txtContact = findViewById(R.id.txtContact);
         txtOrganizedBy = findViewById(R.id.txtOrganizedBy);
+
+        lblName = findViewById(R.id.lblName);
+        lblEventNameErr = findViewById(R.id.lblEventNameErr);
+        lblLocationErr = findViewById(R.id.lblLocationErr);
+        lblDateErr = findViewById(R.id.lblDateErr);
+        lblTimeErr = findViewById(R.id.lblTimeErr);
+        lblDescriptionErr = findViewById(R.id.lblDescriptionErr);
         btnOne = findViewById(R.id.btnOne);
         btnTwo = findViewById(R.id.btnTwo);
 
@@ -254,14 +268,15 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     private void handleBtnOneClick() {
         if (isOrganizer) {
             if (!isEditing) {
-                editNameLayout.setVisibility(View.VISIBLE);
+                lblName.setVisibility(View.VISIBLE);
+                txtEventName.setVisibility(View.VISIBLE);
                 txtEventName.setEnabled(true);
                 txtLocation.setEnabled(true);
                 txtDate.setEnabled(true);
                 txtTime.setEnabled(true);
                 txtDescription.setEnabled(true);
                 btnOne.setText(getString(R.string.btnUpdateEventDetails));
-                editNameLayout.requestFocus();
+                txtEventName.requestFocus();
                 isEditing = true;
             } else {
                 updateEventDetails();
@@ -342,51 +357,54 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
      */
     private void updateEventDetails() {
         try {
-            final Events updatedEvent = new Events(event.getEventID(),
-                    txtEventName.getText().toString(),
-                    txtDescription.getText().toString(),
-                    eventImgPath,
-                    DateFormatterModule.getDate(txtDate.getText().toString()),
-                    DateFormatterModule.getTime(txtTime.getText().toString()),
-                    txtLocation.getText().toString(),
-                    event.getLocality());
+            if (isValidData()) {
+                final Events updatedEvent = new Events(event.getEventID(),
+                        txtEventName.getText().toString(),
+                        txtDescription.getText().toString(),
+                        eventImgPath,
+                        DateFormatterModule.getDate(txtDate.getText().toString()),
+                        DateFormatterModule.getTime(txtTime.getText().toString()),
+                        txtLocation.getText().toString(),
+                        event.getLocality());
 
-            Log.i("EVENT ID", event.getEventID());
-            Log.i("Eaaa", "1234");
+                Log.i("EVENT ID", event.getEventID());
+                Log.i("Eaaa", "1234");
 
-            db.document("/events/" + event.getEventID())
-                    .set(updatedEvent, SetOptions.merge())
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            collapsingToolbar.setTitle(txtEventName.getText());
-                            editNameLayout.setVisibility(View.GONE);
-                            txtLocation.setEnabled(false);
-                            txtDate.setEnabled(false);
-                            txtTime.setEnabled(false);
-                            txtDescription.setEnabled(false);
-                            btnOne.setText(getString(R.string.btnEditEventDetails));
-                            isEditing = false;
-                            Toast.makeText(getApplicationContext(), "Event details updated!", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                db.document("/events/" + event.getEventID())
+                        .set(updatedEvent, SetOptions.merge())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                collapsingToolbar.setTitle(txtEventName.getText());
+                                lblName.setVisibility(View.GONE);
+                                txtEventName.setVisibility(View.GONE);
+                                txtLocation.setEnabled(false);
+                                txtDate.setEnabled(false);
+                                txtTime.setEnabled(false);
+                                txtDescription.setEnabled(false);
+                                btnOne.setText(getString(R.string.btnEditEventDetails));
+                                isEditing = false;
+                                Toast.makeText(getApplicationContext(), "Event details updated!", Toast.LENGTH_LONG).show();
+                            }
+                        });
 
-            db.collection("eventAttendees")
-                    .whereEqualTo("eventID", db.document("/events/" + updatedEvent.getEventID()))
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                List<EventAttendees> eventAttendees = task.getResult().toObjects(EventAttendees.class);
-                                for (EventAttendees eventAttendee : eventAttendees) {
-                                    eventAttendee.setEventDate(updatedEvent.getDate());
-                                    db.document("eventAttendees/" + eventAttendee.getId())
-                                            .set(eventAttendee, SetOptions.merge());
+                db.collection("eventAttendees")
+                        .whereEqualTo("eventID", db.document("/events/" + updatedEvent.getEventID()))
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    List<EventAttendees> eventAttendees = task.getResult().toObjects(EventAttendees.class);
+                                    for (EventAttendees eventAttendee : eventAttendees) {
+                                        eventAttendee.setEventDate(updatedEvent.getDate());
+                                        db.document("eventAttendees/" + eventAttendee.getId())
+                                                .set(eventAttendee, SetOptions.merge());
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+            }
         } catch (ParseException ex) {
             Log.i("ERR Update Event", ex.getMessage());
         }
@@ -526,5 +544,57 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         // Returning the file Extension.
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+
+    /**
+     * Data field validation
+     *
+     * @return
+     */
+    private boolean isValidData() {
+        String eventName = txtEventName.getText().toString();
+        String description = txtDescription.getText().toString();
+        String location = txtLocation.getText().toString();
+        String time = txtTime.getText().toString();
+        String date = txtDate.getText().toString();
+        boolean isValidData = true;
+
+        if (!eventName.matches("^[A-z\\-\\/ ]+$")) {
+            lblEventNameErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblEventNameErr.setVisibility(View.GONE);
+        }
+
+        if (!description.matches("^[\\S\\s\\D\\d]+$")) {
+            lblDescriptionErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblDescriptionErr.setVisibility(View.GONE);
+        }
+
+        if (!location.matches("^[\\S\\s\\D\\d]+$")) {
+            lblLocationErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblLocationErr.setVisibility(View.GONE);
+        }
+
+        if (!date.matches("^[\\S\\s\\D\\d]+$")) {
+            lblDateErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblDateErr.setVisibility(View.GONE);
+        }
+
+        if (!time.matches("^[\\S\\s\\D\\d]+$")) {
+            lblTimeErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblTimeErr.setVisibility(View.GONE);
+        }
+
+        return isValidData;
     }
 }
