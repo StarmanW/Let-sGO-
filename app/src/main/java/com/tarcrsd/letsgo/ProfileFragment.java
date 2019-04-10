@@ -136,10 +136,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         txtAddress.setText(user.getAddress());
                         profileImgPath = user.getProfileImg();
 
-                        // Load image into image view
-                        GlideApp.with(getActivity())
-                                .load(mStorageRef.child(user.getProfileImg()))
-                                .into(profileImgView);
+
+                        try {
+                            // Load image into image view
+                            GlideApp.with(getActivity())
+                                    .load(mStorageRef.child(user.getProfileImg()))
+                                    .into(profileImgView);
+                        } catch (Exception ex) {
+                            profileImgView.setImageResource(R.drawable.upload_img_placeholder);
+                        }
                     }
                 });
     }
