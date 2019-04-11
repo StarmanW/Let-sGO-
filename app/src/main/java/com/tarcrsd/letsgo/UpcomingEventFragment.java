@@ -18,14 +18,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -37,6 +33,7 @@ import com.tarcrsd.letsgo.Models.Events;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -145,11 +142,13 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
      */
     @Override
     public void onLocationChanged(Location location) {
-        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-        List<Address> addresses = null;
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        List<Address> addresses = new ArrayList<>();
         try {
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            displayEventList(addresses.get(0).getLocality());
+            if (addresses.size() != 0) {
+                displayEventList(addresses.get(0).getLocality());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -159,6 +158,7 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
         if (locality != null) {
             db.collection("events")
                     .whereEqualTo("locality", locality)
+                    .whereGreaterThanOrEqualTo("date", new Date())
                     .orderBy("date", Query.Direction.ASCENDING)
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
@@ -175,6 +175,7 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
                     });
         } else {
             db.collection("events")
+                    .whereGreaterThanOrEqualTo("date", new Date())
                     .orderBy("date", Query.Direction.ASCENDING)
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override

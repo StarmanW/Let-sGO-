@@ -1,11 +1,14 @@
 package com.tarcrsd.letsgo;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -96,11 +99,14 @@ public class PreviousEventActivity extends AppCompatActivity {
             mEventsData.clear();
             document.toObject(EventAttendees.class)
                     .getEventID()
-                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException e) {
-                            mEventsData.add(value.toObject(Events.class));
-                            mAdapter.notifyDataSetChanged();
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                mEventsData.add(task.getResult().toObject(Events.class));
+                                mAdapter.notifyDataSetChanged();
+                            }
                         }
                     });
         }

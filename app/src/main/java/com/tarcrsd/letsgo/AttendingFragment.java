@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -82,11 +84,12 @@ public class AttendingFragment extends Fragment {
             mEventsData.clear();
             document.toObject(EventAttendees.class)
                     .getEventID()
-                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException e) {
-                            if (value != null) {
-                                mEventsData.add(value.toObject(Events.class));
+                        public void onComplete(@NonNull Task<DocumentSnapshot> value) {
+                            if (value.isSuccessful()) {
+                                mEventsData.add(value.getResult().toObject(Events.class));
                                 mAdapter.notifyDataSetChanged();
                             }
                         }

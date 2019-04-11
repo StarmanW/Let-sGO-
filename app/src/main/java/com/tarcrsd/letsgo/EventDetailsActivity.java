@@ -12,6 +12,7 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -58,12 +59,15 @@ import com.tarcrsd.letsgo.Models.EventOrganizer;
 import com.tarcrsd.letsgo.Models.Events;
 import com.tarcrsd.letsgo.Models.User;
 import com.tarcrsd.letsgo.Module.DateFormatterModule;
+import com.tarcrsd.letsgo.Module.DatePickerFragment;
 import com.tarcrsd.letsgo.Module.GlideApp;
+import com.tarcrsd.letsgo.Module.TimePickerFragment;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -127,6 +131,9 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
         // Initialize event ID
         event = new Events();
+        if (getIntent().getExtras().getString("eventID") == null) {
+            finish();
+        }
         event.setEventID(getIntent().getExtras().getString("eventID"));
 
         // Init UI
@@ -249,7 +256,11 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 QuerySnapshot document = task.getResult();
-                                if (document.size() != 0) {
+                                List<EventAttendees> eventAttendees = document.toObjects(EventAttendees.class);
+                                if (eventAttendees.size() != 0) {
+                                    if (new Date().after(eventAttendees.get(0).getEventDate())) {
+                                        btnOne.setVisibility(View.GONE);
+                                    }
                                     btnOne.setText(getString(R.string.btn_unattend_event));
                                 } else {
                                     btnOne.setText(getString(R.string.btn_attend_event));
@@ -273,6 +284,12 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 updateImage();
             case R.id.txtLocation:
                 updateLocation();
+            case R.id.txtDate:
+                showDatePicker(txtDate);
+                break;
+            case R.id.txtTime:
+                showDatePicker(txtTime);
+                break;
         }
     }
 
@@ -302,6 +319,23 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             Intent attendanceActivityIntend = new Intent(getApplicationContext(), AttendanceActivity.class);
             attendanceActivityIntend.putExtra("eventID", event.getEventID());
             startActivityForResult(attendanceActivityIntend, ATTENDANCE_REQUEST);
+        }
+    }
+
+    /**
+     * Handles the button click to create a new date picker fragment and
+     * show it.
+     *
+     * @param view View that was clicked
+     */
+    public void showDatePicker(View view) {
+        if (view.getId() == R.id.txtDate) {
+            DialogFragment newFragment = new DatePickerFragment();
+            newFragment.show(getSupportFragmentManager(),
+                    getString(R.string.datepicker));
+        } else if (view.getId() == R.id.txtTime) {
+            DialogFragment newFragment = new TimePickerFragment();
+            newFragment.show(getSupportFragmentManager(), getString(R.string.timepicker));
         }
     }
 

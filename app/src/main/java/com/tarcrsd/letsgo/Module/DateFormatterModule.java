@@ -33,9 +33,9 @@ public class DateFormatterModule {
         String str;
 
         if (AMorPM == 0) {
-            str = "AM";
-        } else {
             str = "PM";
+        } else {
+            str = "AM";
         }
         return str;
     }

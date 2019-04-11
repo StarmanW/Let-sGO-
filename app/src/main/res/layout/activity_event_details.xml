@@ -64,17 +64,17 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="@string/lblName"
-                    android:visibility="gone"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/txtEventName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:visibility="gone"
                     android:ems="10"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/lblEventNameErr"
@@ -124,7 +124,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:ems="10"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    android:focusableInTouchMode="false"
+                    android:onClick="onClick" />
 
                 <TextView
                     android:id="@+id/lblDateErr"
@@ -148,7 +150,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:ems="10"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    android:focusableInTouchMode="false"
+                    android:onClick="onClick" />
 
                 <TextView
                     android:id="@+id/lblTimeErr"
