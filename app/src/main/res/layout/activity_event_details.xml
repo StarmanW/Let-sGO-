@@ -64,17 +64,17 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="@string/lblName"
-                    android:visibility="gone"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/txtEventName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:visibility="gone"
                     android:ems="10"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/lblEventNameErr"
@@ -221,7 +221,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@color/primaryColor"
                 android:onClick="onClick"
-                android:textColor="@android:color/white"
+                android:textColor="@color/quantum_white_100"
                 android:textSize="18sp" />
 
             <Button
@@ -231,7 +231,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@color/primaryColor"
                 android:onClick="onClick"
-                android:textColor="@android:color/white"
+                android:textColor="@color/quantum_white_100"
                 android:textSize="18sp" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
