@@ -15,7 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".PreviousEventActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -45,7 +44,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EventDetailsActivity" />
         </activity>
-        <activity android:name=".CreateEventActivity" />
+        <activity
+            android:name=".CreateEventActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity android:name=".PreviousEventActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity" />
     </application>
