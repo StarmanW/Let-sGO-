@@ -1,6 +1,7 @@
 package com.tarcrsd.letsgo;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,6 +10,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -54,8 +58,17 @@ public class AttendanceActivity extends AppCompatActivity {
      * Initialize UI components
      */
     private void initUI() {
+        db.document("events/" + eventID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        Events event = task.getResult().toObject(Events.class);
+                        setTitle("Participants for " + event.getName());
+                    }
+                });
+
         // UI & variable setup
-        setTitle("Participant List");
         eventAttendees = new ArrayList<>();
         mAdapter = new AttendanceAdapter(getApplicationContext(), eventAttendees);
 

@@ -15,6 +15,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.tarcrsd.letsgo.Adapters.EventAdapter;
@@ -64,8 +65,8 @@ public class AttendingFragment extends Fragment {
 
     private void getEventAttendees() {
         db.collection("eventAttendees")
-                .whereEqualTo("userUID", db.document("/users/" + mAuth.getUid()))
                 .whereEqualTo("status", 1)
+                .whereEqualTo("userUID", db.document("/users/" + mAuth.getUid()))
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {

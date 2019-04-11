@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.tarcrsd.letsgo.Adapters.EventAdapter;
@@ -155,23 +156,38 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
     }
 
     private void displayEventList(String locality) {
-        // FOR DEBUG PURPOSE
-        locality = "Kota Kinabalu";
-
-        db.collection("events")
-                .whereEqualTo("locality", locality)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                        mEventsData.clear();
-                        for (QueryDocumentSnapshot document : value) {
-                            mEventsData.add(document.toObject(Events.class));
+        if (locality != null) {
+            db.collection("events")
+                    .whereEqualTo("locality", locality)
+                    .orderBy("date", Query.Direction.ASCENDING)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
+                            mEventsData.clear();
+                            for (QueryDocumentSnapshot document : value) {
+                                mEventsData.add(document.toObject(Events.class));
+                            }
+                            // Notify the adapter of the change.
+                            mAdapter.notifyDataSetChanged();
                         }
-                        // Notify the adapter of the change.
-                        mAdapter.notifyDataSetChanged();
-                    }
-                });
+                    });
+        } else {
+            db.collection("events")
+                    .orderBy("date", Query.Direction.ASCENDING)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
+                            mEventsData.clear();
+                            for (QueryDocumentSnapshot document : value) {
+                                mEventsData.add(document.toObject(Events.class));
+                            }
+                            // Notify the adapter of the change.
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+        }
     }
+
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
