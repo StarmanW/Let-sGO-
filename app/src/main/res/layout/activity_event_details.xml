@@ -221,7 +221,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@color/primaryColor"
                 android:onClick="onClick"
-                android:textColor="@color/quantum_white_100"
+                android:textColor="@android:color/white"
                 android:textSize="18sp" />
 
             <Button
@@ -231,7 +231,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@color/primaryColor"
                 android:onClick="onClick"
-                android:textColor="@color/quantum_white_100"
+                android:textColor="@android:color/white"
                 android:textSize="18sp" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

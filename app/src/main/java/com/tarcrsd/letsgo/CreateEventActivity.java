@@ -14,14 +14,17 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -33,19 +36,15 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.tarcrsd.letsgo.Models.EventAttendees;
 import com.tarcrsd.letsgo.Models.EventOrganizer;
 import com.tarcrsd.letsgo.Models.Events;
-import com.tarcrsd.letsgo.Models.User;
 import com.tarcrsd.letsgo.Module.DateFormatterModule;
 import com.tarcrsd.letsgo.Module.DatePickerFragment;
 import com.tarcrsd.letsgo.Module.TimePickerFragment;
@@ -55,14 +54,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import javax.annotation.Nullable;
 
-public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener{
+public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
     // POJO object
-    private User user;
     private Events newEvent = new Events();
 
     // CONSTANT
@@ -82,14 +80,17 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     // UI Components
     private CollapsingToolbarLayout collapsingToolbar;
     private ImageView eventImgView;
-    private LinearLayout editNameLayout;
     private EditText txtEventName;
     private EditText txtLocation;
     private EditText txtDate;
     private EditText txtTime;
     private EditText txtDescription;
-    private Button btnOne;
-    private String api_key;
+    private TextView lblName;
+    private TextView lblEventNameErr;
+    private TextView lblLocationErr;
+    private TextView lblDateErr;
+    private TextView lblTimeErr;
+    private TextView lblDescriptionErr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,59 +102,48 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        InitUI();
+        initUI();
     }
 
-    private void InitUI() {
+    private void initUI() {
+        // Replace the default toolbar with Collapsible Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         // Initializes views
         collapsingToolbar = findViewById(R.id.collapsingToolbar);
         eventImgView = findViewById(R.id.eventImgView);
-        editNameLayout = findViewById(R.id.editNameLayout);
         txtEventName = findViewById(R.id.txtEventName);
         txtLocation = findViewById(R.id.txtLocation);
         txtDate = findViewById(R.id.txtDate);
         txtTime = findViewById(R.id.txtTime);
         txtDescription = findViewById(R.id.txtDescription);
-        btnOne = findViewById(R.id.btnOne);
-    }
+        lblEventNameErr = findViewById(R.id.lblEventNameErr);
+        lblLocationErr = findViewById(R.id.lblLocationErr);
+        lblDateErr = findViewById(R.id.lblDateErr);
+        lblTimeErr = findViewById(R.id.lblTimeErr);
+        lblDescriptionErr = findViewById(R.id.lblDescriptionErr);
 
-    /**
-     * Retrieve user data
-     * Links from eventID > eventOrganizer table >
-     * userID > users table
-     */
-    private void getUserData() {
-        db.collection("eventOrganizer")
-                .whereEqualTo("eventID", db.document("/events/" + newEvent.getEventID()))
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                        for (QueryDocumentSnapshot document : value) {
-                            document.toObject(EventOrganizer.class)
-                                    .getUserID()
-                                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                            user = documentSnapshot.toObject(User.class);
-                                        }
-                                    });
-                        }
-                    }
-                });
+        collapsingToolbar.setTitle(" ");
+
+        // Set typing listener
+        txtEventName.addTextChangedListener(this);
     }
 
     /**
      * Buttons onClick event handler
+     *
      * @param v
      */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnOne:
-                handleBtnOneClick();
+            case R.id.btnCreateEvent:
+                createNewEvent();
                 break;
             case R.id.eventImgView:
-                updateImage();
+                uploadEventImage();
                 break;
             case R.id.txtLocation:
                 updateLocation();
@@ -167,11 +157,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void handleBtnOneClick() {
-            updateEventDetails();
-    }
-
-    private void updateImage() {
+    /**
+     *
+     */
+    private void uploadEventImage() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.setType("image/*");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -184,51 +173,72 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     /**
      * Update event details
      */
-    private void updateEventDetails() {
-        try {
-                    newEvent.setEventID(db.collection("events").document().getId());
-                    newEvent.setName(txtEventName.getText().toString());
-                    newEvent.setDescription(txtDescription.getText().toString());
-                    newEvent.setImage(eventImgPath);
-                    newEvent.setDate(DateFormatterModule.getDate(txtDate.getText().toString()));
-                    newEvent.setTime(DateFormatterModule.getTime(txtTime.getText().toString()));
-                    newEvent.setLocation(txtLocation.getText().toString());
+    private void createNewEvent() {
+        if (isValidData()) {
+            try {
+                DocumentReference eventOrganierRef = db.collection("eventOrganizer").document();
+                DocumentReference eventAttendeesRef = db.collection("eventAttendees").document();
 
-            db.document("/events/" + newEvent.getEventID())
-                    .set(newEvent)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            collapsingToolbar.setTitle(txtEventName.getText());
-                            Toast.makeText(getApplicationContext(), "New event added!", Toast.LENGTH_LONG).show();
+                // Set new event details
+                newEvent.setEventID(db.collection("events").document().getId());
+                newEvent.setImage(eventImgPath);
+                newEvent.setName(txtEventName.getText().toString());
+                newEvent.setDate(DateFormatterModule.getDate(txtDate.getText().toString()));
+                newEvent.setTime(DateFormatterModule.getTime(txtTime.getText().toString()));
+                newEvent.setDescription(txtDescription.getText().toString());
 
-                            Intent toEventDetail = new Intent(getApplicationContext(), EventDetailsActivity.class);
-                            toEventDetail.putExtra("eventID", newEvent.getEventID());
-                            startActivity(toEventDetail);
-                        }
-                    });
-        } catch (ParseException ex) {
-            Log.i("ERR add new Event", ex.getMessage());
+                // Add new event organizer record
+                EventOrganizer eventOrganizer = new EventOrganizer(
+                        eventOrganierRef.getId(),
+                        db.document("users/" + mAuth.getUid()),
+                        db.document("events/" + newEvent.getEventID()));
+                eventOrganierRef.set(eventOrganizer);
+
+                // Add new event attendees record
+                EventAttendees eventAttendee = new EventAttendees(
+                        eventAttendeesRef.getId(),
+                        db.document("users/" + mAuth.getUid()),
+                        db.document("events/" + newEvent.getEventID()),
+                        newEvent.getDate(),
+                        1);
+                eventAttendeesRef.set(eventAttendee);
+
+                // Add new event record
+                db.document("/events/" + newEvent.getEventID())
+                        .set(newEvent)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                collapsingToolbar.setTitle(txtEventName.getText());
+                                Toast.makeText(getApplicationContext(), "New event added!", Toast.LENGTH_LONG).show();
+
+                                Intent toEventDetail = new Intent(getApplicationContext(), EventDetailsActivity.class);
+                                toEventDetail.putExtra("eventID", newEvent.getEventID());
+                                startActivity(toEventDetail);
+                            }
+                        });
+            } catch (ParseException ex) {
+                Log.i("ERR add new Event", ex.getMessage());
+            }
         }
     }
 
     private void updateLocation() {
-            final String api_key = getResources().getString(R.string.google_maps_key);
+        final String api_key = getResources().getString(R.string.google_maps_key);
 
-            /**
-             * Initialize Places. For simplicity, the API key is hard-coded. In a production
-             * environment we recommend using a secure mechanism to manage API keys.
-             */
-            if (!Places.isInitialized()) {
-                Places.initialize(getApplicationContext(), api_key);
-            }
+        /**
+         * Initialize Places. For simplicity, the API key is hard-coded. In a production
+         * environment we recommend using a secure mechanism to manage API keys.
+         */
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), api_key);
+        }
 
-            // Start the autocomplete intent.
-            Intent intent = new Autocomplete.IntentBuilder(
-                    AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG))
-                    .build(this);
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST);
-
+        // Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG))
+                .build(this);
+        startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST);
     }
 
     /**
@@ -304,14 +314,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
                             // Get the firebase image path
                             eventImgPath = eventImgRef.getPath();
-                            db.document("/events/" + newEvent.getEventID())
-                                    .update("image", eventImgPath)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Toast.makeText(CreateEventActivity.this, "Event image added!", Toast.LENGTH_LONG).show();
-                                        }
-                                    });
+                            Toast.makeText(CreateEventActivity.this, "Event image added!", Toast.LENGTH_LONG).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -350,7 +353,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
      * @param view View that was clicked
      */
     public void showDatePicker(View view) {
-
         if (view.getId() == R.id.txtDate) {
             DialogFragment newFragment = new DatePickerFragment();
             newFragment.show(getSupportFragmentManager(),
@@ -363,20 +365,19 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     }
 
     /**
-     *
      * @param year  Chosen year
      * @param month Chosen month
      * @param day   Chosen day
      */
     public void processDatePickerResult(int year, int month, int day) {
-        String month_string = new SimpleDateFormat("MMM").format(month);
-        String day_string = Integer.toString(day);
-        String year_string = Integer.toString(year);
-
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, day);
+
+        String month_string = cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+        String day_string = Integer.toString(day);
+        String year_string = Integer.toString(year);
 
         txtDate.setText(day_string +
                 "-" + month_string +
@@ -389,9 +390,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR, hour);
         cal.set(Calendar.MINUTE, minute);
-
-        txtTime.setText(cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE) + " " + getAMOrPM(cal.get(Calendar.AM_PM)));
-
+        txtTime.setText(String.format("%02d:%02d %s", cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), getAMOrPM(cal.get(Calendar.AM_PM))));
     }
 
     private String getAMOrPM(int AMorPM) {
@@ -404,5 +403,72 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         }
 
         return str;
+    }
+
+
+    /**
+     * Data field validation
+     *
+     * @return
+     */
+    private boolean isValidData() {
+        String eventName = txtEventName.getText().toString();
+        String description = txtDescription.getText().toString();
+        String location = txtLocation.getText().toString();
+        String time = txtTime.getText().toString();
+        String date = txtDate.getText().toString();
+        boolean isValidData = true;
+
+        if (!eventName.matches("^[\\S\\s\\D\\d]+$")) {
+            lblEventNameErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblEventNameErr.setVisibility(View.GONE);
+        }
+
+        if (!description.matches("^[\\S\\s\\D\\d]+$")) {
+            lblDescriptionErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblDescriptionErr.setVisibility(View.GONE);
+        }
+
+        if (!location.matches("^[\\S\\s\\D\\d]+$")) {
+            lblLocationErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblLocationErr.setVisibility(View.GONE);
+        }
+
+        if (!date.matches("^[\\S\\s\\D\\d]+$")) {
+            lblDateErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblDateErr.setVisibility(View.GONE);
+        }
+
+        if (!time.matches("^[\\S\\s\\D\\d]+$")) {
+            lblTimeErr.setVisibility(View.VISIBLE);
+            isValidData = false;
+        } else {
+            lblTimeErr.setVisibility(View.GONE);
+        }
+
+        return isValidData;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        collapsingToolbar.setTitle(txtEventName.getText().toString());
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }

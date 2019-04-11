@@ -29,7 +29,7 @@
                 android:id="@+id/eventImgView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="@drawable/upload_img_placeholder"
+                android:background="@drawable/event_placeholder"
                 android:onClick="onClick"
                 android:scaleType="fitXY" />
 
@@ -75,7 +75,7 @@
                     android:ems="10" />
 
                 <TextView
-                    android:id="@+id/lblNameErr"
+                    android:id="@+id/lblEventNameErr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
@@ -190,7 +190,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnOne"
+                android:id="@+id/btnCreateEvent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
