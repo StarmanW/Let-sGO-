@@ -268,7 +268,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                             // Get the firebase image path
                             profileImgPath = profileImgRef.getPath();
                             db.document("/users/" + user.getUserUID())
-                                    .update("image", profileImgPath)
+                                    .update("profileImg", profileImgPath)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @SuppressLint("RestrictedApi")
                                         @Override
@@ -319,7 +319,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         String address = txtAddress.getText().toString();
         boolean isValidData = true;
 
-        if (!name.matches("^[A-z\\-\\/ ]+$")) {
+        if (!name.matches("^[A-z\\-\\@\\/ ]+$")) {
             txtErrName.setVisibility(View.VISIBLE);
             txtErrName.setText(getString(R.string.txtErrName));
             isValidData = false;
@@ -329,20 +329,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
 
         if (!contact.matches("^[0-9\\-+]+$")) {
-            txtErrName.setVisibility(View.VISIBLE);
+            txtErrContact.setVisibility(View.VISIBLE);
             txtErrContact.setText(getString(R.string.txtErrContact));
             isValidData = false;
         } else {
-            txtErrName.setVisibility(View.GONE);
+            txtErrContact.setVisibility(View.GONE);
             txtErrContact.setText("");
         }
 
-        if (!address.matches("^[A-z0-9@\\-,.;' ]+$")) {
-            txtErrName.setVisibility(View.VISIBLE);
+        if (!address.matches("^[A-z0-9@\\-\\/,.;' ]+$")) {
+            txtErrAddress.setVisibility(View.VISIBLE);
             txtErrAddress.setText(getString(R.string.txtErrAddress));
             isValidData = false;
         } else {
-            txtErrName.setVisibility(View.GONE);
+            txtErrAddress.setVisibility(View.GONE);
             txtErrAddress.setText("");
         }
 
