@@ -362,11 +362,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-//    public void showDatePicker(View view) {
-//        DialogFragment newFragment = new TimePickerFragment();
-//        newFragment.show(getSupportFragmentManager(), getString(R.string.timepicker));
-//    }
-
     /**
      *
      * @param year  Chosen year
@@ -403,9 +398,9 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         String str;
 
         if (AMorPM == 0) {
-            str = "PM";
-        } else {
             str = "AM";
+        } else {
+            str = "PM";
         }
 
         return str;
