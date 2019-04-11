@@ -70,7 +70,9 @@ public class AttendingFragment extends Fragment {
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                        getAttendingEvents(value);
+                        if (value != null) {
+                            getAttendingEvents(value);
+                        }
                     }
                 });
     }
@@ -83,8 +85,10 @@ public class AttendingFragment extends Fragment {
                     .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                         @Override
                         public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException e) {
-                            mEventsData.add(value.toObject(Events.class));
-                            mAdapter.notifyDataSetChanged();
+                            if (value != null) {
+                                mEventsData.add(value.toObject(Events.class));
+                                mAdapter.notifyDataSetChanged();
+                            }
                         }
                     });
         }

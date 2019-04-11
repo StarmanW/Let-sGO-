@@ -14,8 +14,14 @@ import com.tarcrsd.letsgo.CreateEventActivity;
 
 import java.util.Calendar;
 
-public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+public class TimePickerFragment extends DialogFragment {
 
+    /**
+     * Creates the time picker dialog.
+     *
+     * @param savedInstanceState Saved instance state bundle
+     * @return TimePickerDialog     The time picker dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -25,15 +31,6 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         int minute = c.get(Calendar.MINUTE);
 
         // Create a new instance of DatePickerDialog and return it.
-//        return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
-        return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        // Set the activity to the Main Activity.
-        CreateEventActivity activity = (CreateEventActivity) getActivity();
-        // Invoke Main Activity's processDatePickerResult() method.
-        activity.processTimePickerResult(hourOfDay, minute);
+        return new TimePickerDialog(getActivity(), (TimePickerDialog.OnTimeSetListener) getActivity(), hour, minute, DateFormat.is24HourFormat(getActivity()));
     }
 }

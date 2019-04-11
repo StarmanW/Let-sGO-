@@ -1,5 +1,7 @@
 package com.tarcrsd.letsgo;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,11 +20,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -59,12 +63,13 @@ import com.tarcrsd.letsgo.Module.GlideApp;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-public class EventDetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class EventDetailsActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     // POJO object
     private Events event;
@@ -611,5 +616,30 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int day) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+
+        String month_string = cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+        String day_string = Integer.toString(day);
+        String year_string = Integer.toString(year);
+
+        txtDate.setText(day_string +
+                "-" + month_string +
+                "-" + year_string +
+                " " + cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hour, int minute) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR, hour);
+        cal.set(Calendar.MINUTE, minute);
+        txtTime.setText(String.format("%02d:%02d %s", cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), DateFormatterModule.getAMOrPM(cal.get(Calendar.AM_PM))));
     }
 }

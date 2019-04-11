@@ -14,7 +14,7 @@ import com.tarcrsd.letsgo.CreateEventActivity;
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 
-public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class DatePickerFragment extends DialogFragment {
 
     /**
      * Creates the date picker dialog with the current date from Calendar.
@@ -32,20 +32,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         // Create a new instance of DatePickerDialog and return it.
-        return new DatePickerDialog(getActivity(), this, year, month, day);
-    }
-
-    /**
-     * Grabs the date and passes it to processDatePickerResult().
-     *
-     * @param datePicker The date picker view
-     * @param year       The year chosen
-     * @param month      The month chosen
-     * @param day        The day chosen
-     */
-    @Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        CreateEventActivity activity = (CreateEventActivity) getActivity();
-        activity.processDatePickerResult(year, month, day);
+        return new DatePickerDialog(getActivity(), (DatePickerDialog.OnDateSetListener) getActivity(), year, month, day);
     }
 }

@@ -19,6 +19,7 @@ import com.tarcrsd.letsgo.Models.EventAttendees;
 import com.tarcrsd.letsgo.Models.Events;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.annotation.Nullable;
 
@@ -35,6 +36,7 @@ public class PreviousEventActivity extends AppCompatActivity {
 
     /**
      * onCreate method
+     *
      * @param savedInstanceState
      */
     public void onCreate(Bundle savedInstanceState) {
@@ -72,18 +74,21 @@ public class PreviousEventActivity extends AppCompatActivity {
         db.collection("eventAttendees")
                 .whereEqualTo("userUID", db.document("/users/" + mAuth.getUid()))
                 .whereEqualTo("status", 2)
+                .whereLessThan("eventDate", new Date())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                        getAttendedEvents(value);
+                        if (value != null) {
+                            getAttendedEvents(value);
+                        }
                     }
                 });
-
     }
 
     /**
      * Get the list of events associated with
      * each of the eventAttendees record
+     *
      * @param value
      */
     private void getAttendedEvents(QuerySnapshot value) {

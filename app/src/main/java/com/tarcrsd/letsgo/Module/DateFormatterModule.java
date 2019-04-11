@@ -28,4 +28,15 @@ public class DateFormatterModule {
         fm.setTimeZone(TimeZone.getDefault());
         return fm.parse(time);
     }
+
+    public static String getAMOrPM(int AMorPM) {
+        String str;
+
+        if (AMorPM == 0) {
+            str = "AM";
+        } else {
+            str = "PM";
+        }
+        return str;
+    }
 }

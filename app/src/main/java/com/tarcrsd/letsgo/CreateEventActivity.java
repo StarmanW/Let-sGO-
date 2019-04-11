@@ -1,6 +1,8 @@
 package com.tarcrsd.letsgo;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,10 +24,12 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -59,7 +63,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
+public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     // POJO object
     private Events newEvent = new Events();
@@ -160,7 +164,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     }
 
     /**
-     *
+     * Upload event image
      */
     private void uploadEventImage() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -363,50 +367,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             DialogFragment newFragment = new TimePickerFragment();
             newFragment.show(getSupportFragmentManager(), getString(R.string.timepicker));
         }
-
     }
-
-    /**
-     * @param year  Chosen year
-     * @param month Chosen month
-     * @param day   Chosen day
-     */
-    public void processDatePickerResult(int year, int month, int day) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, day);
-
-        String month_string = cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
-        String day_string = Integer.toString(day);
-        String year_string = Integer.toString(year);
-
-        txtDate.setText(day_string +
-                "-" + month_string +
-                "-" + year_string +
-                " " + cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
-    }
-
-    @SuppressLint("NewApi")
-    public void processTimePickerResult(int hour, int minute) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR, hour);
-        cal.set(Calendar.MINUTE, minute);
-        txtTime.setText(String.format("%02d:%02d %s", cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), getAMOrPM(cal.get(Calendar.AM_PM))));
-    }
-
-    private String getAMOrPM(int AMorPM) {
-        String str;
-
-        if (AMorPM == 0) {
-            str = "AM";
-        } else {
-            str = "PM";
-        }
-
-        return str;
-    }
-
 
     /**
      * Data field validation
@@ -481,5 +442,30 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void afterTextChanged(Editable s) {
 
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int day) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+
+        String month_string = cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+        String day_string = Integer.toString(day);
+        String year_string = Integer.toString(year);
+
+        txtDate.setText(day_string +
+                "-" + month_string +
+                "-" + year_string +
+                " " + cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hour, int minute) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR, hour);
+        cal.set(Calendar.MINUTE, minute);
+        txtTime.setText(String.format("%02d:%02d %s", cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), DateFormatterModule.getAMOrPM(cal.get(Calendar.AM_PM))));
     }
 }

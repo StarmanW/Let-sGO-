@@ -163,12 +163,14 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                            mEventsData.clear();
-                            for (QueryDocumentSnapshot document : value) {
-                                mEventsData.add(document.toObject(Events.class));
+                            if (value != null) {
+                                mEventsData.clear();
+                                for (QueryDocumentSnapshot document : value) {
+                                    mEventsData.add(document.toObject(Events.class));
+                                }
+                                // Notify the adapter of the change.
+                                mAdapter.notifyDataSetChanged();
                             }
-                            // Notify the adapter of the change.
-                            mAdapter.notifyDataSetChanged();
                         }
                     });
         } else {
@@ -177,12 +179,14 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                            mEventsData.clear();
-                            for (QueryDocumentSnapshot document : value) {
-                                mEventsData.add(document.toObject(Events.class));
+                            if (value != null) {
+                                mEventsData.clear();
+                                for (QueryDocumentSnapshot document : value) {
+                                    mEventsData.add(document.toObject(Events.class));
+                                }
+                                // Notify the adapter of the change.
+                                mAdapter.notifyDataSetChanged();
                             }
-                            // Notify the adapter of the change.
-                            mAdapter.notifyDataSetChanged();
                         }
                     });
         }
