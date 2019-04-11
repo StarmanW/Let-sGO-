@@ -1,6 +1,7 @@
 package com.tarcrsd.letsgo;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final int RC_SIGN_OUT = 0;
     private static final int RC_SIGN_IN = 1;
     private static final int RC_NEWUSER_REGISTER = 2;
+
 
     // Firebase references
     private FirebaseAuth mAuth;
