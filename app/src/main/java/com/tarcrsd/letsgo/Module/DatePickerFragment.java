@@ -1,4 +1,4 @@
-package com.tarcrsd.letsgo;
+package com.tarcrsd.letsgo.Module;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.widget.DatePicker;
 
 import android.support.v4.app.DialogFragment;
+
+import com.tarcrsd.letsgo.CreateEventActivity;
 
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
