@@ -51,6 +51,8 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
     private EventAdapter mAdapter;
     private LocationManager locationManager;
 
+    private Geocoder geocoder;
+
     public UpcomingEventFragment() {
         db = FirebaseFirestore.getInstance();
     }
@@ -65,6 +67,7 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        geocoder = new Geocoder(getContext(), Locale.getDefault());
         initEventRecycleView();
         initUserLocation();
     }
@@ -142,7 +145,6 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
      */
     @Override
     public void onLocationChanged(Location location) {
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         List<Address> addresses = new ArrayList<>();
         try {
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
