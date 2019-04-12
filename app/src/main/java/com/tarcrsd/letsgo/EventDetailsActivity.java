@@ -282,8 +282,10 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.eventImgView:
                 updateImage();
+                break;
             case R.id.txtLocation:
                 updateLocation();
+                break;
             case R.id.txtDate:
                 showDatePicker(txtDate);
                 break;

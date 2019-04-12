@@ -157,20 +157,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
 
         if (!contact.matches("^[0-9\\-+]+$")) {
-            txtErrName.setVisibility(View.VISIBLE);
+            txtErrContact.setVisibility(View.VISIBLE);
             txtErrContact.setText(getString(R.string.txtErrContact));
             isValidData = false;
         } else {
-            txtErrName.setVisibility(View.GONE);
+            txtErrContact.setVisibility(View.GONE);
             txtErrContact.setText("");
         }
 
         if (!address.matches("^[A-z0-9@\\-,.;' ]+$")) {
-            txtErrName.setVisibility(View.VISIBLE);
+            txtErrAddress.setVisibility(View.VISIBLE);
             txtErrAddress.setText(getString(R.string.txtErrAddress));
             isValidData = false;
         } else {
-            txtErrName.setVisibility(View.GONE);
+            txtErrAddress.setVisibility(View.GONE);
             txtErrAddress.setText("");
         }
 

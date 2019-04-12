@@ -90,7 +90,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     private EditText txtDate;
     private EditText txtTime;
     private EditText txtDescription;
-    private TextView lblName;
     private TextView lblEventNameErr;
     private TextView lblLocationErr;
     private TextView lblDateErr;
