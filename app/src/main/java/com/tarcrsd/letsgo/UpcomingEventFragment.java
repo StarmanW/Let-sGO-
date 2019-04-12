@@ -159,8 +159,8 @@ public class UpcomingEventFragment extends Fragment implements LocationListener 
     private void displayEventList(String locality) {
         if (locality != null) {
             db.collection("events")
-                    .whereEqualTo("locality", locality)
                     .whereGreaterThanOrEqualTo("date", new Date())
+                    .whereEqualTo("locality", locality)
                     .orderBy("date", Query.Direction.ASCENDING)
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override

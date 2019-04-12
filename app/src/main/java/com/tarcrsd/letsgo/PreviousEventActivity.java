@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -75,9 +76,10 @@ public class PreviousEventActivity extends AppCompatActivity {
      */
     private void getEventAttendees() {
         db.collection("eventAttendees")
-                .whereEqualTo("userUID", db.document("/users/" + mAuth.getUid()))
                 .whereEqualTo("status", 2)
                 .whereLessThan("eventDate", new Date())
+                .whereEqualTo("userUID", db.document("/users/" + mAuth.getUid()))
+                .orderBy("eventDate")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {

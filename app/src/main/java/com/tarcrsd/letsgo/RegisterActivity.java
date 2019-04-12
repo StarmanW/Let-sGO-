@@ -73,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * Initialize UI components
      */
     private void initUI() {
+        setTitle("Register New Profile");
         txtName = findViewById(R.id.txtName);
         txtContact = findViewById(R.id.txtContact);
         txtAddress = findViewById(R.id.txtAddress);

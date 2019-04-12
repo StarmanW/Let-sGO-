@@ -29,7 +29,7 @@
                 android:id="@+id/eventImgView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="@drawable/event_placeholder"
+                android:src="@drawable/event_placeholder"
                 android:onClick="onClick"
                 android:scaleType="centerCrop" />
 
@@ -194,7 +194,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@color/primaryColor"
+                android:background="@drawable/ripple_effect"
                 android:onClick="onClick"
                 android:text="@string/btn_create_event"
                 android:textColor="@color/quantum_white_100"
