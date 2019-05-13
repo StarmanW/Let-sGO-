@@ -6,9 +6,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -150,29 +150,23 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         if (!name.matches("^[A-z\\-\\/ ]+$")) {
             txtErrName.setVisibility(View.VISIBLE);
-            txtErrName.setText(getString(R.string.txtErrName));
             isValidData = false;
         } else {
             txtErrName.setVisibility(View.GONE);
-            txtErrName.setText("");
         }
 
         if (!contact.matches("^[0-9\\-+]+$")) {
             txtErrContact.setVisibility(View.VISIBLE);
-            txtErrContact.setText(getString(R.string.txtErrContact));
             isValidData = false;
         } else {
             txtErrContact.setVisibility(View.GONE);
-            txtErrContact.setText("");
         }
 
         if (!address.matches("^[A-z0-9@\\-,.;' ]+$")) {
             txtErrAddress.setVisibility(View.VISIBLE);
-            txtErrAddress.setText(getString(R.string.txtErrAddress));
             isValidData = false;
         } else {
             txtErrAddress.setVisibility(View.GONE);
-            txtErrAddress.setText("");
         }
 
         return isValidData;

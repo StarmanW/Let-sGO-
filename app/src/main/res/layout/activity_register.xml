@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="@string/lblName"
+                    android:text="@string/lbl_name"
                     android:textSize="18sp" />
 
                 <EditText
@@ -63,6 +63,7 @@
                     android:id="@+id/txtErrName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/txt_err_name"
                     android:textColor="@android:color/holo_red_dark"
                     android:visibility="gone" />
 
@@ -71,7 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/lblContact"
+                    android:text="@string/lbl_contact"
                     android:textSize="18sp" />
 
                 <EditText
@@ -87,6 +88,7 @@
                     android:id="@+id/txtErrContact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/txt_err_contact"
                     android:textColor="@android:color/holo_red_dark"
                     android:visibility="gone" />
 
@@ -95,7 +97,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/lblAddress"
+                    android:text="@string/lbl_address"
                     android:textSize="18sp" />
 
                 <EditText
@@ -110,6 +112,7 @@
                     android:id="@+id/txtErrAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/txt_err_address"
                     android:textColor="@android:color/holo_red_dark"
                     android:visibility="gone" />
 
@@ -118,7 +121,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/ripple_effect"
+                    android:background="?attr/selectableItemBackground"
                     android:onClick="onClick"
                     android:padding="16dp"
                     android:text="@string/btn_save"
@@ -129,4 +132,4 @@
 
     </ScrollView>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

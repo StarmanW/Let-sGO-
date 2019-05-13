@@ -9,9 +9,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -227,7 +227,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
      * @param data
      */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @android.support.annotation.Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Check if any image is selected
@@ -321,29 +321,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         if (!name.matches("^[A-z\\-\\@\\/ ]+$")) {
             txtErrName.setVisibility(View.VISIBLE);
-            txtErrName.setText(getString(R.string.txtErrName));
             isValidData = false;
         } else {
             txtErrName.setVisibility(View.GONE);
-            txtErrName.setText("");
         }
 
         if (!contact.matches("^[0-9\\-+]+$")) {
             txtErrContact.setVisibility(View.VISIBLE);
-            txtErrContact.setText(getString(R.string.txtErrContact));
             isValidData = false;
         } else {
             txtErrContact.setVisibility(View.GONE);
-            txtErrContact.setText("");
         }
 
         if (!address.matches("^[A-z0-9@\\-\\/,.;' ]+$")) {
             txtErrAddress.setVisibility(View.VISIBLE);
-            txtErrAddress.setText(getString(R.string.txtErrAddress));
             isValidData = false;
         } else {
             txtErrAddress.setVisibility(View.GONE);
-            txtErrAddress.setText("");
         }
 
         return isValidData;

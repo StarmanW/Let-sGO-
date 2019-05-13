@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,13 +9,13 @@
 
     <include layout="@layout/uploading_image_overlay" />
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,21 +29,21 @@
                 android:id="@+id/eventImgView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:src="@drawable/event_placeholder"
                 android:onClick="onClick"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/event_placeholder" />
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
                 app:layout_collapseMode="pin" />
 
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -64,7 +64,7 @@
                     android:id="@+id/lblName"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/lblName"
+                    android:text="@string/lbl_name"
                     android:textSize="18sp" />
 
                 <EditText
@@ -79,7 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:text="@string/txtErrEventName"
+                    android:text="@string/txt_err_eventName"
                     android:textColor="@android:color/holo_red_dark"
                     android:visibility="gone" />
 
@@ -87,7 +87,7 @@
                     android:id="@+id/lblLocation"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/lblLocation"
+                    android:text="@string/lbl_location"
                     android:textSize="18sp" />
 
                 <EditText
@@ -106,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:text="@string/txtErrLocation"
+                    android:text="@string/txt_err_location"
                     android:textColor="@android:color/holo_red_dark"
                     android:visibility="gone" />
 
@@ -114,7 +114,7 @@
                     android:id="@+id/lblDate"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/lblDate"
+                    android:text="@string/lbl_date"
                     android:textSize="18sp" />
 
                 <EditText
@@ -133,7 +133,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:text="@string/txtErrDate"
+                    android:text="@string/txt_err_date"
                     android:textColor="@android:color/holo_red_dark"
                     android:visibility="gone" />
 
@@ -141,7 +141,7 @@
                     android:id="@+id/lblTime"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/lblTime"
+                    android:text="@string/lbl_time"
                     android:textSize="18sp" />
 
                 <EditText
@@ -160,7 +160,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:text="@string/txtErrTime"
+                    android:text="@string/txt_err_time"
                     android:textColor="@android:color/holo_red_dark"
                     android:visibility="gone" />
 
@@ -168,7 +168,7 @@
                     android:id="@+id/lblDescription"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/lblDescription"
+                    android:text="@string/lbl_description"
                     android:textSize="18sp" />
 
                 <EditText
@@ -183,7 +183,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:text="@string/txtErrDescription"
+                    android:text="@string/txt_err_description"
                     android:textColor="@android:color/holo_red_dark"
                     android:visibility="gone" />
 
@@ -194,12 +194,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/ripple_effect"
+                android:background="?attr/selectableItemBackground"
                 android:onClick="onClick"
+                android:padding="16dp"
                 android:text="@string/btn_create_event"
                 android:textColor="@color/quantum_white_100"
                 android:textSize="18sp" />
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-</android.support.design.widget.CoordinatorLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

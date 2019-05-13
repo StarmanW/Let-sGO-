@@ -6,7 +6,7 @@
     android:padding="16dp"
     tools:context=".UpcomingEventFragment">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleViewUpcoming"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

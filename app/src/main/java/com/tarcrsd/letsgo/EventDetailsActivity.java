@@ -10,12 +10,12 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +25,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -46,7 +45,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -240,8 +238,8 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
         // Set button text dynamically
         if (mAuth.getCurrentUser().getUid().equals(user.getUserUID())) {
-            btnOne.setText(getString(R.string.btnEditEventDetails));
-            btnTwo.setText(getString(R.string.btnAttendance));
+            btnOne.setText(getString(R.string.btn_edit_event_details));
+            btnTwo.setText(getString(R.string.btn_view_attendance));
             isOrganizer = true;
         } else {
             isOrganizer = false;
@@ -305,7 +303,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 txtDate.setEnabled(true);
                 txtTime.setEnabled(true);
                 txtDescription.setEnabled(true);
-                btnOne.setText(getString(R.string.btnUpdateEventDetails));
+                btnOne.setText(getString(R.string.btn_update_event_details));
                 txtEventName.requestFocus();
                 isEditing = true;
             } else {
@@ -429,7 +427,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                                 txtDate.setEnabled(false);
                                 txtTime.setEnabled(false);
                                 txtDescription.setEnabled(false);
-                                btnOne.setText(getString(R.string.btnEditEventDetails));
+                                btnOne.setText(getString(R.string.btn_edit_event_details));
                                 isEditing = false;
                                 Toast.makeText(getApplicationContext(), "Event details updated!", Toast.LENGTH_LONG).show();
                             }
@@ -486,7 +484,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
      * @param data
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @android.support.annotation.Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Check if any image is selected
